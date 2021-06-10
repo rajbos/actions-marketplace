@@ -105,6 +105,7 @@ function SetupGit {
     New-Item -Path $repoName -ItemType Directory | Out-Null
     Set-Location $repoName
     Write-Host $(pwd)
+    Write-Host $(ls -Hidden)
 
     Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
     git clone $url "folder"
