@@ -1,0 +1,22 @@
+on: 
+  push:
+    branches:
+      - main 
+      - testing
+
+  # uncomment for scheduled runs
+  #schedule:
+  #  - cron: 7 0 * * 1-5
+
+  # run manually
+  workflow_dispatch:
+
+jobs:
+  get-action-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - run: | 
+        git clone https://github.com/rajbos/actions-marketplace.git
+        pwd
+        ls -la
