@@ -175,7 +175,6 @@ function UploadActionsDataToGitHub {
     param (
         [object] $actions,
         [string] $marketplaceRepo,
-        [string] $userName,
         [string] $PAT
     )
     
@@ -212,7 +211,7 @@ function TestLocally {
 
     if ($env:reposWithUpdates) {
         Write-Host "Found [$(($env:reposWithUpdates | ConvertFrom-Json).actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -userName $userName -PAT $PAT
+        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -PAT $PAT
 
         CleanupGit
     }
@@ -238,7 +237,7 @@ else {
 
     if ($reposWithActions.Count -gt 0) {
         Write-Host "Found [$(($reposWithActions | ConvertFrom-Json).actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -userName $userName -PAT $PAT
+        UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT
 
         Write-Host "Cleaning up local Git folder"
         CleanupGit   
