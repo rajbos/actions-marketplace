@@ -1,0 +1,25 @@
+on: 
+  push:
+    branches:
+      - main 
+      - testing
+
+  # uncomment for scheduled runs
+  #schedule:
+  #  - cron: 7 0 * * 1-5
+
+  # run manually
+  workflow_dispatch:
+
+jobs:
+  get-action-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - id: update_step
+      shell: pwsh
+      name: Get action data
+      run: | 
+        $updateResult = (.\updater.ps1 -orgName ${{ github.repository_owner }} -userName "xxx" -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName ${{ secrets.username }} -userEmail ${{ secrets.userEmail }} )
