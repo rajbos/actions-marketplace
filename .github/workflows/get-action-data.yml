@@ -22,4 +22,4 @@ jobs:
       shell: pwsh
       name: Get action data
       run: | 
-        $updateResult = (.\updater.ps1 -orgName ${{ github.repository_owner }} -userName "xxx" -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName ${{ secrets.username }} -userEmail ${{ secrets.userEmail }} )
+        $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -userName "xxx" -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName ${{ secrets.username }} -userEmail ${{ secrets.userEmail }} )
