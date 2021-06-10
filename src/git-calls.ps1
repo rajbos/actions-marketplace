@@ -104,13 +104,14 @@ function SetupGit {
     # create the (new) the folder and move into it
     New-Item -Path $repoName -ItemType Directory | Out-Null
     Set-Location $repoName
-    Write-Host $(pwd)
-    Write-Host $(ls -al)
-    
+    $location=$(pwd)
+
 
     Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
-    git clone $url "folder"
+    git clone $url $location
     $status = (git clone $url "folder" 2>&1)
+    Write-Host "Status:"
+    Write-Host $status
     foreach ($obj in $status) {
         Write-Host $obj
         if ($obj.ToString().Contains("fatal: could not read Username for")) {
