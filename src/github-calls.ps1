@@ -191,3 +191,24 @@ function CreateNewIssueForRepo {
 
     Write-Host "Issue has been created and can be found at this url: ($($result.html_url))"
 }
+
+function FindAllRepos {
+    param (
+        [string] $orgName,
+        [string] $userName,
+        [string] $PAT
+    )
+
+    $url = "https://api.github.com/orgs/$orgName/repos"
+    $info = CallWebRequest -url $url -userName $userName -PAT $PAT
+
+    if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
+        
+        Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
+        $url = "https://api.github.com/users/$orgName/repos"
+        $info = CallWebRequest -url $url -userName $userName -PAT $PAT
+    }
+
+    Write-Host "Found [$($info.Count)] repositories in [$orgName]"
+    return $info
+}

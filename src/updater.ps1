@@ -14,68 +14,6 @@ param (
 # placeholder to enable testing locally later on
 $testingLocally = $false
 
-function FindAllRepos {
-    param (
-        [string] $orgName,
-        [string] $userName,
-        [string] $PAT
-    )
-
-    $url = "https://api.github.com/orgs/$orgName/repos"
-    $info = CallWebRequest -url $url -userName $userName -PAT $PAT
-
-    if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
-        
-        Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
-        $url = "https://api.github.com/users/$orgName/repos"
-        $info = CallWebRequest -url $url -userName $userName -PAT $PAT
-    }
-
-    Write-Host "Found [$($info.Count)] repositories in [$orgName]"
-    return $info
-}
-
-function FindRepoOrigin {
-    param (
-        [string] $repoUrl,
-        [string] $userName,
-        [string] $PAT
-    )
-    
-    $info = CallWebRequest -url $repoUrl -userName $userName -PAT $PAT
-        
-    if ($false -eq $info.fork) {
-        Write-Error "The repo with url [$repoUrl] is not a fork"
-        throw
-    }
-
-    Write-Host "Forks default branch = [$($info.parent.default_branch)] [$($info.parent.branches_url)] with last push [$($info.pushed_at)]"
-    Write-Host "Found parent [$($info.parent.html_url)] of repo [$repoUrl], last push was on [$($info.parent.pushed_at)]"
-
-    $defaultBranch = $info.parent.default_branch
-    $parentDefaultBranchUrl = $info.parent.branches_url -replace "{/branch}", "/$($defaultBranch)"
-    Write-Host "Branches url for default branch: " $parentDefaultBranchUrl
-
-    $branchLastCommitDate = GetBranchInfo -PAT $PAT -parent $info.parent.full_name -branchName $defaultBranch
-
-    if ($info.pushed_at -lt $branchLastCommitDate) {
-        Write-Host "There are new updates on the parent available on the default branch [$defaultBranch], last commit date: [$branchLastCommitDate]"
-    }
-
-    # build the compare url
-    $compareUrl = "https://github.com/$($info.full_name)/compare/$defaultBranch..$($info.parent.owner.login):$defaultBranch"
-    Write-Host "You can compare the default branches using this link: $compareUrl"
-
-    return [PSCustomObject]@{
-        parentUrl = $info.parent.html_url
-        defaultBranch = $defaultBranch
-        lastPushRepo = $info.pushed_at
-        lastPushParent = $branchLastCommitDate
-        updateAvailable = ($info.pushed_at -lt $branchLastCommitDate)
-        compareUrl = $compareUrl
-    }
-}
-
 function GetFileAvailable {
     param (
         [string] $repository,
@@ -236,7 +174,8 @@ else {
     $reposWithActions = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
 
     if ($reposWithActions.Count -gt 0) {
-        Write-Host "Found [$(($reposWithActions | ConvertFrom-Json).actions.Length)] action repos!"
+        Write-Host "$reposWithActions"
+        Write-Host "Found [$($reposWithActions.actions.Length)] action repos!"
         UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT
 
         Write-Host "Cleaning up local Git folder"
