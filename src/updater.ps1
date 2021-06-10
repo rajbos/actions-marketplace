@@ -1,23 +1,17 @@
 # example calls:
-# .\updater.ps1 -orgName "rajbos-actions" -userName "xxx" -PAT $env:GitHubPAT
+# .\updater.ps1 -orgName "rajbos-actions" -userName "xxx" -PAT $env:GitHubPAT -$marketplaceRepo "rajbos/actions-marketplace"
 param (
     [string] $orgName,
     [string] $userName,
     [string] $PAT,
-    [string] $issuesRepository
+    [string] $marketplaceRepo,
+    [string] $userEmail
 )
-
-# example parameters:
-#$repoUrl = "https://api.github.com/repos/rajbos-actions/test-repo"
-#$orgName = "rajbos-actions"
 
 # pull in central calls library
 . $PSScriptRoot\github-calls.ps1
 
-# install a yaml parsing module
-#Install-Module powershell-yaml -Scope CurrentUser -Force
-
-# placeholder to enable testing locally
+# placeholder to enable testing locally later on
 $testingLocally = $false
 
 function FindAllRepos {
@@ -82,23 +76,6 @@ function FindRepoOrigin {
     }
 }
 
-
-function GetParentHasUpdatesAvailable {
-    param (
-        [string] $repoUrl,
-        [string] $userName,
-        [string] $PAT
-    )
-
-    $parent = FindRepoOrigin -repoUrl $repoUrl -userName $userName -PAT $PAT
-    if ($null -ne $parent) {
-        Write-Host "The repo is forked and the fork is from [$($parent.parentUrl)]"
-        return $parent.updateAvailable
-    }
-
-    return $false
-}
-
 function GetFileAvailable {
     param (
         [string] $repository,
@@ -122,8 +99,7 @@ function CheckAllReposInOrg {
     param (
         [string] $orgName,
         [string] $userName,
-        [string] $PAT,
-        [string] $issuesRepository
+        [string] $PAT
     )
 
     Write-Host "Running a check on all repositories inside of organization [$orgName] with user [$userName] and a PAT that has length [$($PAT.Length)]"
@@ -131,7 +107,7 @@ function CheckAllReposInOrg {
     $repos = FindAllRepos -orgName $orgName -userName $userName -PAT $PAT
 
     # create hastable
-    $reposWithUpdates = @()
+    $reposWithActions = @()
 
     foreach ($repo in $repos) {
         # add empty line for logs readability
@@ -167,7 +143,7 @@ function CheckAllReposInOrg {
                     }
                 }
 
-                $reposWithUpdates += $repoData
+                $reposWithActions += $repoData
             } 
             else {
                 Write-Host "Cannot load action.yml"
@@ -178,8 +154,11 @@ function CheckAllReposInOrg {
         }
     }
 
-    Write-Host "Found [$($reposWithUpdates.Count)] repositories with actions"
-    return $reposWithUpdates
+    Write-Host "Found [$($reposWithActions.Count)] repositories with actions"
+    return [PSCustomObject]@{
+        actions = $reposWithActions
+        lastUpdated = Get-Date
+    }
 }
 
 function GetRawFile {
@@ -194,17 +173,25 @@ function GetRawFile {
 
 function UploadActionsDataToGitHub {
     param (
-        [object] $actions
+        [object] $actions,
+        [string] $marketplaceRepo,
+        [string] $userName,
+        [string] $PAT
     )
+    
+    $marketplaceRepoUrl = "https://github.com/$marketplaceRepo.git"
+    
+    . $PSScriptRoot\git-calls.ps1 -PAT $PAT -$gitUserName $userName `
+                                    -RemoteUrl $marketplaceRepoUrl `
+                                    -gitUserEmail $userEmail 
 
     # git checkout
+    SetupGit
 
     # store result on disk
-    $actions >> actions.json
+    $actions >> actions-data.json
 
-    # add file
-
-    # git push
+    CommitAndPushBranch -branchName "main"
 }
 
 function TestLocally {
@@ -212,36 +199,48 @@ function TestLocally {
         [string] $orgName,
         [string] $userName,
         [string] $PAT,
-        [string] $issuesRepository
+        [string] $marketplaceRepo
     )
 
     # comment line below to skip the reloading of the repos after the first run
-    #$env:reposWithUpdates = $null
+    $env:reposWithUpdates = $null
     # load the repos with updates if we don't have them available yet
     if($null -eq $env:reposWithUpdates) {
-        $repos = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -issuesRepository $issuesRepository
+        $repos = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT
         $env:reposWithUpdates = $repos | ConvertTo-Json        
     }
 
     if ($env:reposWithUpdates) {
-        Write-Host "Found [$(($env:reposWithUpdates | ConvertFrom-Json).Length)] action repos!"
-        UploadActionsDataToGitHub -actions $env:reposWithUpdates
+        Write-Host "Found [$(($env:reposWithUpdates | ConvertFrom-Json).actions.Length)] action repos!"
+        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -userName $userName -PAT $PAT
+
+        CleanupGit
     }
 }
 
 # uncomment to test locally
-$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true; $issuesRepository = "rajbos/github-fork-updater"
+$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true; 
+$marketplaceRepo = "rajbos/actions-marketplace"; $userEmail = "raj.bos@gmail.com"; $userName = "Rob Bos";
+
+# main function calls
 
 if ($testingLocally) {
-    TestLocally -orgName $orgName -userName $userName -PAT $PAT -issuesRepository $issuesRepository
+    TestLocally -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
 }
 else {
     # production flow:
-    $reposWithUpdates = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -issuesRepository $issuesRepository
 
-    if ($reposWithUpdates.Count -gt 0) {
-        
+    # install a yaml parsing module
+    Install-Module powershell-yaml -Scope CurrentUser -Force
+
+    # get action repos
+    $reposWithActions = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
+
+    if ($reposWithActions.Count -gt 0) {
+        Write-Host "Found [$(($reposWithActions | ConvertFrom-Json).actions.Length)] action repos!"
+        UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -userName $userName -PAT $PAT
+
+        Write-Host "Cleaning up local Git folder"
+        CleanupGit   
     }
-
-    return $reposWithUpdates
 }
