@@ -32,6 +32,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: | 
+        mkdir temp
         cd temp
         git clone https://xx:${{ secrets.GITHUB_TOKEN }}@github.com/rajbos/actions-marketplace.git
         pwd
