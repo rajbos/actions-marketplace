@@ -107,8 +107,8 @@ function SetupGit {
     Write-Host $(pwd)
 
     Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
-    git clone $url 
-    $status = (git clone $url . 2>&1)
+    git clone $url "folder"
+    $status = (git clone $url "folder" 2>&1)
     foreach ($obj in $status) {
         Write-Host $obj
         if ($obj.ToString().Contains("fatal: could not read Username for")) {
@@ -130,6 +130,9 @@ function SetupGit {
     }
     Write-Host "After cloning"
     Write-Host $(ls)
+    Set-Location "folder"
+    Write-Host $(ls)
+    
     
     git config user.email $gitUserEmail
     git config user.name $gitUserName
