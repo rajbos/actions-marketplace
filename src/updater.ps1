@@ -191,7 +191,7 @@ function UploadActionsDataToGitHub {
     # store result on disk
     $actions >> actions-data.json
 
-    CommitAndPushBranch -branchName "main"
+    CommitAndPushBranch -branchName "data-test"
 }
 
 function TestLocally {
