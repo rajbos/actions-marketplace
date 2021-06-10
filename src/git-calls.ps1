@@ -70,6 +70,7 @@ function CommitAndPushBranch {
         [string] $commitMessage = "Actions list updated"
     )
 
+    git checkout -b $branchName
     git add .
     git commit -m $commitMessage
     Write-Host "Pushing branch with name [$branchName] to upstream"
