@@ -107,6 +107,7 @@ function SetupGit {
     Write-Host pwd
 
     Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
+    git clone $url .
     $status = (git clone $url . 2>&1)
     foreach ($obj in $status) {
         Write-Host $obj
