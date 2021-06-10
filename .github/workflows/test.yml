@@ -12,11 +12,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  get-action-data:
+  direct-clone:
     runs-on: ubuntu-latest
 
     steps:
     - run: | 
         git clone https://xx:${{ secrets.GITHUB_TOKEN }}@github.com/rajbos/actions-marketplace.git
         pwd
+        ls -la
+        cd actions-marketplace
+        ls -la
+  
+  
+  checkout-first:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - uses: actions/checkout@v2
+
+    - run: | 
+        cd temp
+        git clone https://xx:${{ secrets.GITHUB_TOKEN }}@github.com/rajbos/actions-marketplace.git
+        pwd
+        ls -la
+        cd actions-marketplace
         ls -la
