@@ -219,8 +219,8 @@ function TestLocally {
 }
 
 # uncomment to test locally
-$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true; 
-$marketplaceRepo = "rajbos/actions-marketplace"; $userEmail = "raj.bos@gmail.com"; $userName = "Rob Bos";
+#$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true; 
+#$marketplaceRepo = "rajbos/actions-marketplace"; $userEmail = "raj.bos@gmail.com"; $userName = "Rob Bos";
 
 # main function calls
 
