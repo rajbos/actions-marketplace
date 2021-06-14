@@ -61,7 +61,9 @@ function CreateNewBranch {
         git checkout -b $branchName
     }
     else {
+        Write-Host "Using existing branch [$branch]"
         git checkout $branchName
+        git pull
     }
     
     return $branchName
@@ -72,7 +74,6 @@ function CommitAndPushBranch {
         [string] $commitMessage = "Actions list updated"
     )
 
-    CreateNewBranch
     git add .
     git commit -m $commitMessage
     Write-Host "Pushing branch with name [$branchName] to upstream"
