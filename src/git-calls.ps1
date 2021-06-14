@@ -61,7 +61,7 @@ function CreateNewBranch {
         git checkout -b $branchName
     }
     else {
-        Write-Host "Using existing branch [$branch]"
+        Write-Host "Using existing branch [$branchName]"
         git checkout $branchName
         git pull
     }
