@@ -113,6 +113,7 @@ function GetFileInfo {
         [string] $PAT
     )
 
+    Write-Host "Downloading the file [$fileName] for repository [$repository]"
     $url = "https://api.github.com/repos/$repository/contents/$fileName"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT -skipWarnings $true
 

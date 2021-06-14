@@ -55,10 +55,10 @@ function CheckAllReposInOrg {
         # GET https://api.github.com/repos/rajbos/actions-testing/contents/action.yml
         # https://api.github.com/repos/${$repo.full_name}/contents/action.yml
 
-        $hasActionFile  = GetFileAvailable -repository $repo.full_name -fileName 'action.yaml' -PAT $PAT -userName $userName
+        $hasActionFile  = GetFileAvailable -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
         
         if ($hasActionFile) {
-            Write-Host "Found action.yaml in repository [$($repo.full_name)], loading readme.md"
+            Write-Host "Found action.yml in repository [$($repo.full_name)], loading the file contents"
             if ($repo.full_name -eq "rajbos/mutation-testing-elements") {
                 Write-Host "Break here for testing"
             }
