@@ -130,6 +130,8 @@ function UploadActionsDataToGitHub {
 
     # git checkout
     SetupGit
+    
+    CreateNewBranch
 
     # store result on disk
     ($actions | ConvertTo-Json -Depth 100) > actions-data.json
