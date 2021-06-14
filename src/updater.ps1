@@ -115,15 +115,18 @@ function UploadActionsDataToGitHub {
         [object] $actions,
         [string] $marketplaceRepo,
         [string] $PAT,
-        [string] $repositoryName
+        [string] $repositoryName,
+        [string] $repositoryOwner
     )
     
     $marketplaceRepoUrl = "https://github.com/$marketplaceRepo.git"
+    $branchName = "$repositoryOwner/data"
     
     . $PSScriptRoot\git-calls.ps1 -PAT $PAT -$gitUserName $userName `
                                     -RemoteUrl $marketplaceRepoUrl `
                                     -gitUserEmail $userEmail `
-                                    -repositoryName $repositoryName
+                                    -repositoryName $repositoryName `
+                                    -branchName $branchName
 
     # git checkout
     SetupGit
@@ -131,7 +134,7 @@ function UploadActionsDataToGitHub {
     # store result on disk
     ($actions | ConvertTo-Json -Depth 100) > actions-data.json
 
-    CommitAndPushBranch -branchName "data-test"
+    CommitAndPushBranch
     
     Write-Host "Cleaning up local Git folder"
     CleanupGit   
@@ -143,7 +146,8 @@ function TestLocally {
         [string] $userName,
         [string] $PAT,
         [string] $marketplaceRepo,
-        [string] $repositoryName
+        [string] $repositoryName,
+        [string] $repositoryOwner
     )
 
     # comment line below to skip the reloading of the repos after the first run
@@ -156,7 +160,7 @@ function TestLocally {
 
     if ($env:reposWithUpdates) {
         Write-Host "Found [$(($env:reposWithUpdates | ConvertFrom-Json).actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName
+        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName -repositoryOwner $repositoryOwner
 
         CleanupGit
     }
@@ -168,9 +172,10 @@ function TestLocally {
 
 # main function calls
 $repositoryName = $marketplaceRepo.SubString($marketplaceRepo.IndexOf('/')+1, $marketplaceRepo.Length-$marketplaceRepo.IndexOf('/')-1)
+$repositoryOwner = $marketplaceRepo.SubString(0, $marketplaceRepo.IndexOf('/'))
 
 if ($testingLocally) {
-    TestLocally -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo -repositoryName $repositoryName
+    TestLocally -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo -repositoryName $repositoryName -repositoryOwner $repositoryOwner
 }
 else {
     # production flow:
@@ -184,6 +189,6 @@ else {
     if ($reposWithActions.Count -gt 0) {
         Write-Host "$($reposWithActions | ConvertTo-Json)"
         Write-Host "Found [$($reposWithActions.actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName
+        UploadActionsDataToGitHub -actions $reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName -repositoryOwner $repositoryOwner
     }
 }

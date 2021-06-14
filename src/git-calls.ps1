@@ -5,7 +5,8 @@ param (
   [string] $gitUserName,
   [string] $gitUserEmail,
   [string] $RemoteUrl,
-  [string] $repositoryName
+  [string] $repositoryName,
+  [string] $branchName
 )
 
 function GetCurrentBranch {
@@ -55,11 +56,12 @@ function GetNewBranchName {
 
 function CreateNewBranch {
    
-    $branchName = GetNewBranchName
-
     if ($true -eq (CheckBranchNotExists -newBranchName $branchName)) {
         Write-Host "Creating new branchName [$branchName]"
         git checkout -b $branchName
+    }
+    else {
+        git checkout $branchName
     }
     
     return $branchName
@@ -67,11 +69,10 @@ function CreateNewBranch {
 
 function CommitAndPushBranch {
     param (
-        [string] $branchName,
         [string] $commitMessage = "Actions list updated"
     )
 
-    git checkout -b $branchName
+    CreateNewBranch
     git add .
     git commit -m $commitMessage
     Write-Host "Pushing branch with name [$branchName] to upstream"
