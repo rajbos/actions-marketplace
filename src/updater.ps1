@@ -27,7 +27,7 @@ function GetFileAvailable {
         return $false
     }
     else {
-        Write-Host "Found yaml file contents!"
+        Write-Host "Found yml file contents!"
         #Write-Host $info
         return $true
     }
@@ -65,6 +65,7 @@ function CheckAllReposInOrg {
                         
             $fileInfo = GetFileInfo -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
 
+            Write-Host "$fileInfo"
             $repoInfo = GetRawFile -url $fileInfo.download_url
             if ($repoInfo) {
                 Write-Host "Loaded action.yml information"     
@@ -103,6 +104,7 @@ function GetRawFile {
         [string] $url
     )
 
+    Write-Host "Loading file content from url [$url]"
     $result = Invoke-WebRequest -Uri $url -Method Get -ErrorAction Stop | Select-Object -Expand Content
 
     return $result
