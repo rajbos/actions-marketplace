@@ -62,8 +62,7 @@ function CheckAllReposInOrg {
             if ($repo.full_name -eq "rajbos/mutation-testing-elements") {
                 Write-Host "Break here for testing"
             }
-            
-            # todo: test for readme.MD / ReadMe.md / README.md / readme.md
+                        
             $fileInfo = GetFileInfo -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
 
             $repoInfo = GetRawFile -url $fileInfo.download_url
