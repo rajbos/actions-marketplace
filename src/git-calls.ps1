@@ -129,6 +129,7 @@ function SetupGit {
         }
     }
 
+    Write-Host "Moving into directory [$repositoryName]"
     Set-Location $repositoryName
         
     git config user.email $gitUserEmail

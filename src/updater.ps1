@@ -142,7 +142,8 @@ function TestLocally {
         [string] $orgName,
         [string] $userName,
         [string] $PAT,
-        [string] $marketplaceRepo
+        [string] $marketplaceRepo,
+        [string] $repositoryName
     )
 
     # comment line below to skip the reloading of the repos after the first run
@@ -155,7 +156,7 @@ function TestLocally {
 
     if ($env:reposWithUpdates) {
         Write-Host "Found [$(($env:reposWithUpdates | ConvertFrom-Json).actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -PAT $PAT
+        UploadActionsDataToGitHub -actions $env:reposWithUpdates -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName
 
         CleanupGit
     }
@@ -166,9 +167,10 @@ function TestLocally {
 #$marketplaceRepo = "rajbos/actions-marketplace"; $userEmail = "raj.bos@gmail.com"; $userName = "Rob Bos";
 
 # main function calls
+$repositoryName = $marketplaceRepo.SubString($marketplaceRepo.IndexOf('/')+1, $marketplaceRepo.Length-$marketplaceRepo.IndexOf('/')-1)
 
 if ($testingLocally) {
-    TestLocally -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
+    TestLocally -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo -repositoryName $repositoryName
 }
 else {
     # production flow:
@@ -182,6 +184,6 @@ else {
     if ($reposWithActions.Count -gt 0) {
         Write-Host "$($reposWithActions | ConvertTo-Json)"
         Write-Host "Found [$($reposWithActions.actions.Length)] action repos!"
-        UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT
+        UploadActionsDataToGitHub -actions $reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName
     }
 }
