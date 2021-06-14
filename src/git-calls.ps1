@@ -130,12 +130,12 @@ function SetupGit {
             throw
         }
     }
-    Write-Host "After cloning"
-    Write-Host $(ls)
-    Set-Location "folder"
-    Write-Host $(ls)
     
-    
+    Write-Host "After cloning:"
+    Write-Host $(ls -al)
+    Set-Location $repoName
+    Write-Host $(ls -al)
+        
     git config user.email $gitUserEmail
     git config user.name $gitUserName
 }
