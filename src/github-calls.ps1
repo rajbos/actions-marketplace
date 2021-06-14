@@ -66,7 +66,9 @@ function CallWebRequest {
             Write-Host "$messageData"
         }
         if ($messageData.message -eq "Not Found") {
-            Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
+            if ($false -eq $skipWarnings) {
+                Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
+            }
             return $messageData.documentation_url
         }
     }

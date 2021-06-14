@@ -108,7 +108,7 @@ function SetupGit {
 
     Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName] with current location = [$location]"
     #git clone $url $location
-    $status = (git clone $url $location 2>&1)
+    $status = (git clone $url $location) # git clone $url $location 2>&1
     Write-Host "Status:"
     Write-Host $status
     foreach ($obj in $status) {

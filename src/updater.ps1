@@ -175,7 +175,7 @@ else {
     $reposWithActions = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
 
     if ($reposWithActions.Count -gt 0) {
-        Write-Host "$reposWithActions"
+        Write-Host "$($reposWithActions | ConvertTo-Json)"
         Write-Host "Found [$($reposWithActions.actions.Length)] action repos!"
         UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT
 
