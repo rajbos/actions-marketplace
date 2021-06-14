@@ -65,7 +65,6 @@ function CheckAllReposInOrg {
                         
             $fileInfo = GetFileInfo -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
 
-            Write-Host "$fileInfo"
             $repoInfo = GetRawFile -url $fileInfo.download_url
             if ($repoInfo) {
                 Write-Host "Loaded action.yml information"     
