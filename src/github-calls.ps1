@@ -48,6 +48,7 @@ function CallWebRequest {
         $info = ($result.Content | ConvertFrom-Json)
     }
     catch {
+        $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
         if ($false -eq $skipWarnings) {
             Write-Host "Error calling api at [$url]:"
             Write-Host "  StatusCode: $($_.Exception.Response.StatusCode)"
@@ -55,20 +56,18 @@ function CallWebRequest {
             Write-Host "  RateLimit-Remaining: $($_.Exception.Response.Headers.GetValues("X-RateLimit-Remaining"))"
             Write-Host "  RateLimit-Reset: $($_.Exception.Response.Headers.GetValues("X-RateLimit-Reset"))"
             Write-Host "  RateLimit-Used: $($_.Exception.Response.Headers.GetValues("x-ratelimit-used"))"
-
-            $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
+            
             Write-Host "$($_.ErrorDetails.Message)"
             if ($messageData.message.StartsWith("API rate limit exceeded")) {
                 Write-Error "Rate limit exceeded. Halting execution"
                 throw
             }
-
-            if ($messageData.message -eq "Not Found") {
-                Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
-                return $messageData.documentation_url
-            }
             
             Write-Host "$messageData"
+        }
+        if ($messageData.message -eq "Not Found") {
+            Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
+            return $messageData.documentation_url
         }
     }
 

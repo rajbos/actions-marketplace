@@ -27,7 +27,7 @@ function GetFileAvailable {
         return $false
     }
     else {
-        Write-Host "Found yml file contents!"
+        Write-Host "Found yml file!"
         #Write-Host $info
         return $true
     }
