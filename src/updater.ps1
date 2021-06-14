@@ -95,7 +95,7 @@ function CheckAllReposInOrg {
     Write-Host "Found [$($reposWithActions.Count)] repositories with actions"
     return [PSCustomObject]@{
         actions = $reposWithActions
-        lastUpdated = Get-Date
+        lastUpdated = (Get-Date -AsUTC -UFormat '+%Y%m%d_%H%M%s')
     }
 }
 
