@@ -4,7 +4,8 @@ param (
   [string] $branchPrefix,
   [string] $gitUserName,
   [string] $gitUserEmail,
-  [string] $RemoteUrl
+  [string] $RemoteUrl,
+  [string] $repositoryName
 )
 
 function GetCurrentBranch {
@@ -104,13 +105,10 @@ function SetupGit {
     # create the (new) the folder and move into it
     New-Item -Path $repoName -ItemType Directory | Out-Null
     Set-Location $repoName
-    $location=$(pwd)
 
-    Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName] with current location = [$location]"
+    Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName] with current location = [$(Get-Location)]"
     #git clone $url $location
-    $status = (git clone $url $location) # git clone $url $location 2>&1
-    Write-Host "Status:"
-    Write-Host $status
+    $status = (git clone $url) # git clone $url $location 2>&1
     foreach ($obj in $status) {
         Write-Host $obj
         if ($obj.ToString().Contains("fatal: could not read Username for")) {
@@ -130,18 +128,15 @@ function SetupGit {
             throw
         }
     }
-    
-    Write-Host "After cloning:"
-    Write-Host $(ls -al)
-    Set-Location $repoName
-    Write-Host $(ls -al)
+
+    Set-Location $repositoryName
         
     git config user.email $gitUserEmail
     git config user.name $gitUserName
 }
 
 function CleanupGit {
-    Set-Location ..
+    Set-Location ../..
 
     Remove-Item -Path "repo-src-folder" -Recurse -Force
 }

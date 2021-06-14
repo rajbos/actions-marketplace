@@ -114,22 +114,27 @@ function UploadActionsDataToGitHub {
     param (
         [object] $actions,
         [string] $marketplaceRepo,
-        [string] $PAT
+        [string] $PAT,
+        [string] $repositoryName
     )
     
     $marketplaceRepoUrl = "https://github.com/$marketplaceRepo.git"
     
     . $PSScriptRoot\git-calls.ps1 -PAT $PAT -$gitUserName $userName `
                                     -RemoteUrl $marketplaceRepoUrl `
-                                    -gitUserEmail $userEmail 
+                                    -gitUserEmail $userEmail `
+                                    -repositoryName $repositoryName
 
     # git checkout
     SetupGit
 
     # store result on disk
-    $actions >> actions-data.json
+    ($actions | ConvertTo-Json) >> actions-data.json
 
     CommitAndPushBranch -branchName "data-test"
+    
+    Write-Host "Cleaning up local Git folder"
+    CleanupGit   
 }
 
 function TestLocally {
@@ -178,8 +183,5 @@ else {
         Write-Host "$($reposWithActions | ConvertTo-Json)"
         Write-Host "Found [$($reposWithActions.actions.Length)] action repos!"
         UploadActionsDataToGitHub -actions $$reposWithActions -marketplaceRepo $marketplaceRepo -PAT $PAT
-
-        Write-Host "Cleaning up local Git folder"
-        CleanupGit   
     }
 }
