@@ -129,7 +129,7 @@ function UploadActionsDataToGitHub {
     SetupGit
 
     # store result on disk
-    ($actions | ConvertTo-Json) > actions-data.json
+    ($actions | ConvertTo-Json -Depth 100) > actions-data.json
 
     CommitAndPushBranch -branchName "data-test"
     
