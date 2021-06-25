@@ -1,13 +1,53 @@
 {
   "actions": [
     {
-      "repoName": "rajbos/actions-testing",
+      "repoName": "rajbos-actions/trx-parser",
       "action": {
-        "name": "PowerShell Hello World",
+        "name": "trx-parser",
+        "author": "Nasir Amin",
+        "description": "An action to parse trx reports from a given path and use GitHub status check api to fail PRs"
+      }
+    },
+    {
+      "repoName": "rajbos-actions/sonarcloud-github-action",
+      "action": {
+        "name": "SonarCloud Scan",
         "author": null,
-        "description": "PowerShell Hello World"
+        "description": "Scan your code with SonarCloud to detect bugs, vulnerabilities and code smells in more than 25 programming languages.\n"
+      }
+    },
+    {
+      "repoName": "rajbos-actions/webapps-deploy",
+      "action": {
+        "name": "Azure WebApp",
+        "author": null,
+        "description": "Deploy Web Apps/Containerized Web Apps to Azure. github.com/Azure/Actions"
+      }
+    },
+    {
+      "repoName": "rajbos-actions/github-action-psscriptanalyzer",
+      "action": {
+        "name": "PSScriptAnalyzer checks",
+        "author": "Brandon Olin",
+        "description": "GitHub Action to run PSScriptAnalyzer static code analysis checks on Pull Requests"
+      }
+    },
+    {
+      "repoName": "rajbos-actions/snyk-actions",
+      "action": {
+        "name": "Snyk",
+        "author": "Gareth Rushgrove",
+        "description": "Check your applications for vulnerabilties using Snyk"
+      }
+    },
+    {
+      "repoName": "rajbos-actions/github-action-markdown-link-check",
+      "action": {
+        "name": "markdown-link-check",
+        "author": "Gaurav Nelson",
+        "description": "Check if all links are valid in markdown files."
       }
     }
   ],
-  "lastUpdated": "20210625_1923"
+  "lastUpdated": "20210625_1952"
 }
