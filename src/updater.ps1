@@ -119,7 +119,9 @@ function UploadActionsDataToGitHub {
     )
     
     $marketplaceRepoUrl = "https://github.com/$marketplaceRepo.git"
-    $branchName = "$repositoryOwner/data"
+    $branchName = "gh-pages"
+    $dataFileUrl = "https://raw.githubusercontent.com/$marketplaceRepo/$branchName/actions-data.json"
+    Write-Host "Using dataFileUrl [$dataFileUrl]"
     
     . $PSScriptRoot\git-calls.ps1 -PAT $PAT -$gitUserName $userName `
                                     -RemoteUrl $marketplaceRepoUrl `
@@ -132,8 +134,10 @@ function UploadActionsDataToGitHub {
     
     CreateNewBranch
 
-    # store result on disk
+    # store json result on disk
     ($actions | ConvertTo-Json -Depth 100) > actions-data.json
+    # update path to actions-data.json file for gh-pages
+    $dataFileUrl > .\actions-data-url.txt
 
     CommitAndPushBranch
     
