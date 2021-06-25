@@ -1,0 +1,13 @@
+{
+  "actions": [
+    {
+      "repoName": "rajbos/actions-testing",
+      "action": {
+        "name": "PowerShell Hello World",
+        "author": null,
+        "description": "PowerShell Hello World"
+      }
+    }
+  ],
+  "lastUpdated": "20210625_1923"
+}
