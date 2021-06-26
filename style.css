@@ -127,11 +127,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     display: block;
 }
 
-@media screen and (min-width: 42em) and (max-width: 64em){
 .main-content {
     padding: 2rem 4rem;
     font-size: 1.1rem;
-}}
+}
 
 #main {
     clear: both;
