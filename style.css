@@ -156,3 +156,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .top {
     clear: both;
 }
+
+#lastUpdatePanel {
+    margin-bottom: 5px;
+    clear: both;
+}
+
+#lastUpdated {
+    margin-left: 5px;
+}
