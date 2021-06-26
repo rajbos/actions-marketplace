@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box;
+}
+
+div {
+    display: block;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #606c71;
+}
+
+.panel {
+    border: solid 1px #155799;
+    min-height: 285px;
+    margin: 5px 5px 5px 5px;
+    padding: 5px 5px 5px 5px;
+    width: 350px;
+    float: left;
+}
+
+#actionCount {
+    font-weight: 600;
+}
+
+.name {
+    font-weight: 600;
+    padding-right: 5px;
+}
+
+.description {
+    padding-top: 5px;
+}
+
+.line{
+    margin-bottom: 4px;
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em){
+.page-header {
+    padding: 3rem 4rem;
+}}
+.page-header {
+    color: #fff;
+    text-align: center;
+    background-color: #159957;
+    background-image: linear-gradient(
+120deg
+, #155799, #159957);
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em){
+.project-name {
+    font-size: 2.25rem;
+}}
+
+.project-name {
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+}
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em){
+.project-tagline {
+    font-size: 1.15rem;
+}}
+.project-tagline {
+    margin-bottom: 2rem;
+    font-weight: normal;
+    opacity: 0.7;
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em){
+.btn {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+}}
+
+.btn {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: rgba(255,255,255,0.7);
+    background-color: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.3rem;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+}
+a {
+    color: #1e6bb8;
+    text-decoration: none;
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em) {
+.site-footer {
+    font-size: 1rem;
+}}
+
+.site-footer {
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: solid 1px #eff0f1;
+    clear: both;
+}
+
+.site-footer-owner {
+    display: block;
+    font-weight: bold;
+}
+
+.site-footer-credits {
+    color: #819198;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+    display: block;
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em){
+.main-content {
+    padding: 2rem 4rem;
+    font-size: 1.1rem;
+}}
+
+#main {
+    clear: both;
+}
+
+.main-content {
+    word-wrap: break-word;
+}
+
+.actionInfo {
+    float: left;  
+    margin-right: 25px;
+}
+
+.search {
+    float: left;                
+}
+
+.search input {
+    height: 31px;
+}
+
+.top {
+    clear: both;
+}
