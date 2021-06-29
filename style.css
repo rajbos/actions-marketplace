@@ -41,7 +41,6 @@ body {
     margin-bottom: 4px;
 }
 
-
 @media screen and (min-width: 42em) and (max-width: 64em){
 .page-header {
     padding: 3rem 4rem;
@@ -70,7 +69,6 @@ h1 {
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em){
-
 .project-tagline {
     font-size: 1.15rem;
 }}
