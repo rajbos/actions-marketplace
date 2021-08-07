@@ -111,10 +111,11 @@ function main() {
 
     if ($actionsFound.Count -gt 0) {
 
-        Write-Host $uniqueActions
+        Write-Host "Found these actions:"
+        Write-Host $actionsFound
 
         # upload the data into the marketplaceRepo
-        Write-Host "Found [$($actionsFound.actions.Length)] actions in use!"
+        #Write-Host "Found [$($actionsFound.actions.Length)] actions in use!"
 
         # todo: store the json file
         #UploadActionsDataToGitHub -actions $actionsFound -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName -repositoryOwner $repositoryOwner
