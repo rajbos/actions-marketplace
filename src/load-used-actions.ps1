@@ -12,7 +12,9 @@ param (
 . $PSScriptRoot\github-calls.ps1
 
 # install a yaml parsing module
-#Install-Module powershell-yaml -Scope CurrentUser -Force
+if($env:computername -ne "ROB-XPS9700") {
+    Install-Module powershell-yaml -Scope CurrentUser -Force
+}
 
 function  GetActionsFromWorkflow {
     param (
