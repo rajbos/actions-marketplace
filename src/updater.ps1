@@ -55,6 +55,7 @@ function CheckAllReposInOrg {
         # GET https://api.github.com/repos/rajbos/actions-testing/contents/action.yml
         # https://api.github.com/repos/${$repo.full_name}/contents/action.yml
 
+        #todo: check for action.yaml as well
         $hasActionFile  = GetFileAvailable -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
         
         if ($hasActionFile) {
@@ -104,6 +105,7 @@ function GetRawFile {
     )
 
     Write-Host "Loading file content from url [$url]"
+    # todo: changes all calls to this into calls to the method with the same name (but authenticated) in 'github-calls.ps1'
     $result = Invoke-WebRequest -Uri $url -Method Get -ErrorAction Stop | Select-Object -Expand Content
 
     return $result

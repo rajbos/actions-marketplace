@@ -35,9 +35,13 @@ function CallWebRequest {
     $Headers = Get-Headers -userName $userName -PAT $PAT
 
     try {
-
         $bodyContent = ($body | ConvertTo-Json) -replace '\\', '\'
-        $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -ErrorAction Stop
+        if ($verbToUse -eq "Get") {
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -ErrorAction Stop -UserAgent $userName
+        }
+        else {
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -UserAgent $userName -ErrorAction Stop
+        }
         
         Write-Host "  StatusCode: $($result.StatusCode)"
         Write-Host "  RateLimit-Limit: $($result.Headers["X-RateLimit-Limit"])"
@@ -60,7 +64,7 @@ function CallWebRequest {
             Write-Host "$($_.ErrorDetails.Message)"
             if ($messageData.message.StartsWith("API rate limit exceeded")) {
                 Write-Error "Rate limit exceeded. Halting execution"
-                throw
+               throw
             }
             
             Write-Host "$messageData"
@@ -70,6 +74,11 @@ function CallWebRequest {
                 Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
             }
             return $messageData.documentation_url
+        }
+
+        if ($messageData.message.StartsWith("API rate limit exceeded")) {
+            Write-Error "Rate limit exceeded. Halting execution"
+            throw
         }
     }
 
@@ -104,6 +113,21 @@ function GetParentInfo {
         parentDefaultBranch = $info.parent.default_branch
     }
 
+}
+
+function GetAllFilesInPath {
+    param (
+        [string] $repository,
+        [string] $path,
+        [string] $userName,
+        [string] $PAT
+    )
+
+    Write-Host "Checking if there are files in the path [$path] in repository [$repository]"
+    $url = "https://api.github.com/repos/$repository/contents/$path"
+    $info = CallWebRequest -url $url -userName $userName -PAT $PAT #-skipWarnings $true
+
+    return $info
 }
 
 function GetFileInfo {
@@ -204,16 +228,34 @@ function FindAllRepos {
         [string] $PAT
     )
 
+    # todo: add support for pagination
+    # check if we can find all repos that are forks with this call, so we can retrieve the normal repos with a GraphQL query (which could include the information if the repo has workflow files
+
+    # check if we have an org with repos available, or that we have a user account that we need to get all repos for
     $url = "https://api.github.com/orgs/$orgName/repos"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT
 
     if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
         
-        Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
+        #Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
         $url = "https://api.github.com/users/$orgName/repos"
         $info = CallWebRequest -url $url -userName $userName -PAT $PAT
     }
 
     Write-Host "Found [$($info.Count)] repositories in [$orgName]"
     return $info
+}
+
+function GetRawFile {
+    param (
+        [string] $url,
+        [string] $PAT
+    )
+
+    Write-Host "Loading file content from url [$url]"
+    
+    $Headers = Get-Headers -userName $userName -PAT $PAT
+    $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method Get -ErrorAction Stop | Select-Object -Expand Content
+
+    return $result
 }

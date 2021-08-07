@@ -1,0 +1,18 @@
+on:
+  push: 
+    branches: 
+      - used-actions
+
+  workflow_dispatch:
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - id: load_usage_step
+      shell: pwsh
+      name: Get actions used in org data
+      run: | 
+        $updateResult = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
