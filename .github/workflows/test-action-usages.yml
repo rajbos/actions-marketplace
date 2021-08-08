@@ -17,7 +17,7 @@ jobs:
         $updateResult = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
     
     - name: upload result file as artefact
-      uses: actions/upload-artefact@v2
+      uses: actions/upload-artifact@v2
       with: 
         name: summarized-actions
         path: summarized-actions.json
