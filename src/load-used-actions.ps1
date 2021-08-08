@@ -142,7 +142,7 @@ function LoadAllUsedActionsFromRepos {
 
         # comment out code below to stop after a certain number of repos to prevent issues with 
         # rate limiting on the load file count (that is not workin correctly)
-        
+
         #$i++
         #if ($i -eq 2) {
         #    # break out on second result:
@@ -150,11 +150,7 @@ function LoadAllUsedActionsFromRepos {
         #}
     }
 
-    #$uniqueActions = $actions | Sort-Object | Get-Unique -AsString
-    #Write-Host "Found [$($uniqueActions.Count)] actions in [$($repos.Count)] repos"
-    $summarizeActions = SummarizeActionsUsed -actions $actions
-
-    return $summarizeActions
+    return $actions
 }
 
 function main() {
