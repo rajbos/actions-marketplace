@@ -18,7 +18,9 @@ if($env:computername -ne "ROB-XPS9700") {
 
 function  GetActionsFromWorkflow {
     param (
-        [string] $workflow
+        [string] $workflow,
+        [string] $workflowFileName,
+        [string] $repo
     )
 
     # parse the workflow file and extract the actions used in it
@@ -35,8 +37,15 @@ function  GetActionsFromWorkflow {
             $uses=$step.Item("uses")
             if ($null -ne $uses) {
                 Write-Host "   Found action used: [$uses]"
-                $action = $uses.Split("@")[0]
-                $actions += $action
+                $actionLink = $uses.Split("@")[0]
+
+                $data = [PSCustomObject]@{
+                    actionLink = $actionLink
+                    workflowFileName = $workflowFileName
+                    repo = $repo
+                }
+
+                $actions += $data
             }
         }
     }
@@ -50,7 +59,6 @@ function GetAllUsedActionsFromRepo {
         [string] $PAT,
         [string] $userName
     )
-
 
     $url = "https://api.github.com/repos/$repo"
     $repoInfo = CallWebRequest -url $url -userName $userName -PAT $PAT 
@@ -70,13 +78,50 @@ function GetAllUsedActionsFromRepo {
     foreach ($workflowFile in $workflowFiles) {
         if ($workflowFile.download_url.EndsWith(".yml")) { 
             $workflow = GetRawFile -url $workflowFile.download_url -PAT $PAT
-            $actions = GetActionsFromWorkflow -workflow $workflow
+            $actions = GetActionsFromWorkflow -workflow $workflow -workflowFileName $workflowFile.name -repo $repo
 
             $actionsInRepo += $actions
         }
     }
 
     return $actionsInRepo
+}
+
+function SummarizeActionsUsed {
+    param (
+        [object] $actions
+    )
+
+    $summarized =  @()
+    foreach ($action in $actions) {
+        $found = $summarized | Where-Object { $_.actionLink -eq $action.actionLink }
+        if ($null -ne $found) {
+            # action already found, add this info to it
+            $newInfo =  [PSCustomObject]@{
+                repo = $action.repo
+                workflowFileName = $action.workflowFileName
+            }
+
+            $found.workflows += $newInfo
+            $found.count++
+        }
+        else {
+            # new action, create a new object
+            $newItem =  [PSCustomObject]@{
+                actionLink = $action.actionLink
+                count = 1
+                workflows =  @(
+                    [PSCustomObject]@{
+                        repo = $action.repo
+                        workflowFileName = $action.workflowFileName
+                    }
+                )           
+            }
+            $summarized += $newItem
+        }
+    }
+
+    return $summarized
 }
 
 function LoadAllUsedActionsFromRepos {
@@ -89,16 +134,27 @@ function LoadAllUsedActionsFromRepos {
 
     # create hastable
     $actions = @()
+    $i=0
     foreach ($repo in $repos) {
         $actionsUsed = GetAllUsedActionsFromRepo -repo $repo.full_name -PAT $PAT -userName $userName
 
         $actions += $actionsUsed
+
+        # comment out code below to stop after a certain number of repos to prevent issues with 
+        # rate limiting on the load file count (that is not workin correctly)
+        
+        #$i++
+        #if ($i -eq 2) {
+        #    # break out on second result:
+        #    return $actions
+        #}
     }
 
-    $uniqueActions  = $actions | Sort-Object | Get-Unique -AsString
-    Write-Host "Found [$($uniqueActions.Count)] actions in [$($repos.Count)] repos"
+    #$uniqueActions = $actions | Sort-Object | Get-Unique -AsString
+    #Write-Host "Found [$($uniqueActions.Count)] actions in [$($repos.Count)] repos"
+    $summarizeActions = SummarizeActionsUsed -actions $actions
 
-    return $uniqueActions
+    return $summarizeActions
 }
 
 function main() {
@@ -110,9 +166,15 @@ function main() {
     $actionsFound = LoadAllUsedActionsFromRepos -repos $repos -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
 
     if ($actionsFound.Count -gt 0) {
+                
+        $summarizeActions = SummarizeActionsUsed -actions $actionsFound
 
-        Write-Host "Found these actions:"
-        Write-Host $actionsFound
+        Write-Host "Found [$($actionsFound.Count)] actions used in workflows with [$($summarizeActions.Count) unique actions]"
+
+        # write the actions to disk
+        $fileName = "summarized-actions.json"
+        $jsonObject = ($summarizeActions | ConvertTo-Json -Depth 10)
+        New-Item -Path $fileName -Value $jsonObject -Force | Out-Null
 
         # upload the data into the marketplaceRepo
         #Write-Host "Found [$($actionsFound.actions.Length)] actions in use!"
