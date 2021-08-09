@@ -142,7 +142,7 @@ function GetAllFilesInPath {
     #force testing with private repo:
     #$repository = "rajbos/k8s-actions-runner-test"
     $url = GetGitHubUrl "repos/$repository/contents/$path"
-    $info = CallWebRequest -url $url -userName $userName -PAT $env:GITHUB_TOKEN #-skipWarnings $true
+    $info = CallWebRequest -url $url -userName $userName -PAT $PAT #-skipWarnings $true
 
     return $info
 }
