@@ -28,6 +28,7 @@ function CallWebRequest {
     )
 
     $Headers = Get-Headers -userName $userName -PAT $PAT
+    Write-Host "Calling api on url [$url]"
 
     try {
         $bodyContent = ($body | ConvertTo-Json) -replace '\\', '\'
@@ -47,7 +48,13 @@ function CallWebRequest {
         $info = ($result.Content | ConvertFrom-Json)
     }
     catch {
-        $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
+        try {
+            $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
+        }
+        catch {
+            Write-Error "Error calling api on [$url] " + $_
+        }
+
         if ($false -eq $skipWarnings) {
             Write-Host "Error calling api at [$url]:"
             Write-Host "  StatusCode: $($_.Exception.Response.StatusCode)"
