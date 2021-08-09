@@ -10,7 +10,8 @@ function Get-Headers {
     $basicAuthValue = "Basic $encodedCreds"
 
     $headers = @{
-        Authorization = $basicAuthValue       
+        Authorization = $basicAuthValue   
+        "User-Agent"= $userName     
     }
 
     return $headers
@@ -31,10 +32,10 @@ function CallWebRequest {
     try {
         $bodyContent = ($body | ConvertTo-Json) -replace '\\', '\'
         if ($verbToUse -eq "Get") {
-            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -ErrorAction Stop -UserAgent $userName
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -ErrorAction Stop
         }
         else {
-            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -UserAgent $userName -ErrorAction Stop
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -ErrorAction Stop
         }
         
         Write-Host "  StatusCode: $($result.StatusCode)"
@@ -88,13 +89,32 @@ function GetForkCloneUrl {
     return "https://xx:$PAT@github.com/$fork.git"
 }
 
+function GetGitHubUrl {
+    param (
+        [string] $url
+    )
+
+    if ($url.StartsWith("/")) {
+        # remove / from the start of the url
+        $url = $url.Substring(1, $url.Length - 1)
+    }
+
+    $apiUrl = $env:GITHUB_API_URL
+    if ($null -eq $apiUrl) {
+        # assume we are hitting the SaaS version of GitHub
+        $apiUrl = "https://api.github.com"
+    }
+
+    return "$apiUrl/$url"
+}
+
 function GetParentInfo {
     param (
         [string] $fork,
         [string] $PAT
     )
 
-    $repoUrl = "https://api.github.com/repos/$fork"
+    $repoUrl = GetGitHubUrl "repos/$fork"
     $info = CallWebRequest -url $repoUrl -userName $userName -PAT $PAT
 
     if ($false -eq $info.fork) {
@@ -121,8 +141,8 @@ function GetAllFilesInPath {
 
     #force testing with private repo:
     #$repository = "rajbos/k8s-actions-runner-test"
-    $url = "https://api.github.com/repos/$repository/contents/$path"
-    $info = CallWebRequest -url $url -userName $userName -PAT $PAT #-skipWarnings $true
+    $url = GetGitHubUrl "repos/$repository/contents/$path"
+    $info = CallWebRequest -url $url -userName $userName -PAT $env:GITHUB_TOKEN #-skipWarnings $true
 
     return $info
 }
@@ -136,7 +156,7 @@ function GetFileInfo {
     )
 
     Write-Host "Checking if the file [$fileName] exists in repository [$repository]"
-    $url = "https://api.github.com/repos/$repository/contents/$fileName"
+    $url = GetGitHubUrl "repos/$repository/contents/$fileName"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT -skipWarnings $true
 
     return $info
@@ -149,7 +169,7 @@ function GetBranchInfo {
         [string] $branchName
     )
 
-    $repoUrl = "https://api.github.com/repos/$parent/branches/$branchName"
+    $repoUrl = GetGitHubUrl "repos/$parent/branches/$branchName"
     $info = CallWebRequest -url $repoUrl -userName $userName -PAT $PAT
 
     return $info.commit.commit.author.date
@@ -164,7 +184,7 @@ function AddCommentToIssue {
         [string] $PAT
     )
 
-    $url = "https://api.github.com/repos/$repoName/issues/$number/comments"
+    $url = GetGitHubUrl "repos/$repoName/issues/$number/comments"
 
     $body = [PSCustomObject]@{
         body = $message
@@ -182,7 +202,7 @@ function CloseIssue {
         [string] $PAT
     )    
 
-    $url = "https://api.github.com/repos/$issuesRepositoryName/issues/$number"
+    $url = GetGitHubUrl "repos/$issuesRepositoryName/issues/$number"
 
     $data = [PSCustomObject]@{       
         state = "closed"
@@ -205,7 +225,7 @@ function CreateNewIssueForRepo {
         [string] $userName
     )
 
-    $url = "https://api.github.com/repos/$issuesRepositoryName/issues"
+    $url = GetGitHubUrl "repos/$issuesRepositoryName/issues"
 
     $data = [PSCustomObject]@{
         title = $title
@@ -229,13 +249,13 @@ function FindAllRepos {
     # check if we can find all repos that are forks with this call, so we can retrieve the normal repos with a GraphQL query (which could include the information if the repo has workflow files
 
     # check if we have an org with repos available, or that we have a user account that we need to get all repos for
-    $url = "https://api.github.com/orgs/$orgName/repos"
+    $url = GetGitHubUrl "/orgs/$orgName/repos"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT
 
     if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
         
         #Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
-        $url = "https://api.github.com/users/$orgName/repos"
+        $url = GetGitHubUrl "users/$orgName/repos"
         $info = CallWebRequest -url $url -userName $userName -PAT $PAT
     }
 

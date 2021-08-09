@@ -60,12 +60,8 @@ function GetAllUsedActionsFromRepo {
         [string] $userName
     )
 
-    $url = "https://api.github.com/repos/$repo"
-    $repoInfo = CallWebRequest -url $url -userName $userName -PAT $PAT 
-    Write-Host "Repo Info: $repoInfo"
-
     # get all the actions from the repo
-    $workflowFiles = GetAllFilesInPath -repository $repo -path ".github/workflows/" -PAT $PAT -userName $userName
+    $workflowFiles = GetAllFilesInPath -repository $repo -path ".github/workflows" -PAT $PAT -userName $userName
     if ($workflowFiles -eq "https://docs.github.com/rest/reference/repos#get-repository-content") {
     #if ([bool]($workflowFiles.PSobject.Properties.name -match "message")) {
         Write-Host "Could not get workflow files from [$repo]"
@@ -171,6 +167,7 @@ function main() {
         $fileName = "summarized-actions.json"
         $jsonObject = ($summarizeActions | ConvertTo-Json -Depth 10)
         New-Item -Path $fileName -Value $jsonObject -Force | Out-Null
+        Write-Host "Stored the summarized usage info into this file: [$fileName]"
 
         # upload the data into the marketplaceRepo
         #Write-Host "Found [$($actionsFound.actions.Length)] actions in use!"

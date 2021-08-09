@@ -8,4 +8,3 @@ $marketplaceRepo = ''
 $username = 'rajbos'
 $userEmail = ''
 .$PSScriptRoot\load-used-actions.ps1 -orgName $orgName -PAT $env:GITHUB_TOKEN -marketplaceRepo $marketplaceRepo -userName $username -userEmail $userEmail
-
