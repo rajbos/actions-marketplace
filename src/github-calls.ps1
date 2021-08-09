@@ -1,25 +1,19 @@
 
-# placeholder for caching headers
-$CentralHeaders
 function Get-Headers {
     param (        
         [string] $userName,
         [string] $PAT
     )
 
-    if ($null -ne $CentralHeaders) {
-        return $CentralHeaders
-    }
-
     $pair = "$($userName):$($PAT)"
     $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
     $basicAuthValue = "Basic $encodedCreds"
 
-    $CentralHeaders = @{
-        Authorization = $basicAuthValue
+    $headers = @{
+        Authorization = $basicAuthValue       
     }
 
-    return $CentralHeaders
+    return $headers
 }
 
 function CallWebRequest {
@@ -124,6 +118,9 @@ function GetAllFilesInPath {
     )
 
     Write-Host "Checking if there are files in the path [$path] in repository [$repository]"
+
+    #force testing with private repo:
+    #$repository = "rajbos/k8s-actions-runner-test"
     $url = "https://api.github.com/repos/$repository/contents/$path"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT #-skipWarnings $true
 
