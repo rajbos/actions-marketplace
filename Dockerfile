@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get install libssl-dev -y \
     && apt-get install gss-ntlmssp -y \
     && apt-get install -y powershell \
-    && apt-get curl -y 
+    && apt-get install curl -y 
 
 # install the module we need
 RUN ["pwsh", "-Command", "install-module powershell-yaml -force"]
