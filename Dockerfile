@@ -16,4 +16,5 @@ RUN apt-get update \
     && apt-get install curl -y 
 
 # install the module we need
-RUN ["pwsh", "-Command", "install-module powershell-yaml -force"]
+RUN ["pwsh", "-Command", "install-module -name powershell-yaml -Force -Repository PSGallery"]
+SHELL ["pwsh"]

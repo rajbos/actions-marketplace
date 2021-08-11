@@ -13,6 +13,12 @@ param (
 
 # install a yaml parsing module
 if($env:computername -ne "ROB-XPS9700") {
+    Write-Host "PSHOME: [$pshome]" 
+    Write-Host "PSModulePath:"
+    foreach ($path in $env:PSModulePath -split ':') {
+        Write-Host "- [$path]"
+    }
+    Write-Host "Importing module for the yaml parsing"
     Install-Module powershell-yaml -Scope CurrentUser -Force
 }
 
