@@ -13,7 +13,7 @@ env:
     
 jobs:
   build-and-push-container:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build
