@@ -9,12 +9,12 @@ on:
 #permissions: read-all
 
 env:
-  container_registry: ${{ secrets.container_registry }}
+  container_registry: https://ghcr.io/rajbos/actions-marketplace
     
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: $container_registry/powershell:7
+    container: https://ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
     steps:
     - uses: actions/checkout@v2
 
