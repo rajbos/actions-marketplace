@@ -6,7 +6,7 @@ You can build the dockerfile locally with:
 
 To run the dockerfile locally with the src folder mounted you can run:
 ``` shell
-  docker run -it --rm -v c:/users/RobBos/Code/Repos/GitHub/actions-marketplace/src:/src pwsh-local
+  docker run -it --rm -v ${PWD}/src:/src pwsh-local
 ```
 ##### Note: on windows, the path has to be fully specified, otherwise you will only see an empty directory mounted in `src`
 

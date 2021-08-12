@@ -11,15 +11,22 @@ param (
 # pull in central calls library
 . $PSScriptRoot\github-calls.ps1
 
-# install a yaml parsing module
+# install a yaml parsing module (already done in the container image)
 if($env:computername -ne "ROB-XPS9700") {
     Write-Host "PSHOME: [$pshome]" 
     Write-Host "PSModulePath:"
     foreach ($path in $env:PSModulePath -split ':') {
         Write-Host "- [$path]"
     }
-    Write-Host "Importing module for the yaml parsing"
-    Install-Module powershell-yaml -Scope CurrentUser -Force
+    try {
+        Write-Host "Importing module for the yaml parsing"
+        #Install-Module powershell-yaml -Scope CurrentUser -Force
+        Import-Module powershell-yaml -Force
+    }
+    catch {
+        Write-Warning "Error during importing of the yaml module needed for parsing"
+        Write-Warning $_
+    }
 }
 
 function  GetActionsFromWorkflow {
@@ -68,8 +75,7 @@ function GetAllUsedActionsFromRepo {
 
     # get all the actions from the repo
     $workflowFiles = GetAllFilesInPath -repository $repo -path ".github/workflows" -PAT $PAT -userName $userName
-    if ($workflowFiles -eq "https://docs.github.com/rest/reference/repos#get-repository-content") {
-    #if ([bool]($workflowFiles.PSobject.Properties.name -match "message")) {
+    if (([string]$workflowFiles).StartsWith("https://docs.github.com/")) {
         Write-Host "Could not get workflow files from [$repo]"
         return;
     }
@@ -77,12 +83,22 @@ function GetAllUsedActionsFromRepo {
     # create hastable to store the results in
     $actionsInRepo = @()
 
+    Write-Host "Found [$($workflowFiles.Length)] files in the workflows directory"
     foreach ($workflowFile in $workflowFiles) {
-        if ($workflowFile.download_url.EndsWith(".yml")) { 
-            $workflow = GetRawFile -url $workflowFile.download_url -PAT $PAT
-            $actions = GetActionsFromWorkflow -workflow $workflow -workflowFileName $workflowFile.name -repo $repo
+        try {
+            if ($null -ne $workflowFile.download_url -and $workflowFile.download_url.Length -gt 0 -and $workflowFile.download_url.Split("?")[0].EndsWith(".yml")) { 
+                $workflow = GetRawFile -url $workflowFile.download_url -PAT $PAT
+                $actions = GetActionsFromWorkflow -workflow $workflow -workflowFileName $workflowFile.name -repo $repo
 
-            $actionsInRepo += $actions
+                $actionsInRepo += $actions
+            }
+        }
+        catch {
+            Write-Warning "Error handling this workflow file:"
+            Write-Host $workflowFile | ConvertFrom-Json -Depth 10
+            Write-Warning "----------------------------------"
+            Write-Host "Error: [$_]"
+            Write-Warning "----------------------------------"
         }
     }
 
@@ -182,6 +198,8 @@ function main() {
         #UploadActionsDataToGitHub -actions $actionsFound -marketplaceRepo $marketplaceRepo -PAT $PAT -repositoryName $repositoryName -repositoryOwner $repositoryOwner
     }
 
+    return $summarizeActions
 }
 
-main
+$actions = main
+return $actions

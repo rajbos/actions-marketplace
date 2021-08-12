@@ -44,15 +44,43 @@ function CallWebRequest {
         Write-Host "  RateLimit-Remaining: $($result.Headers["X-RateLimit-Remaining"])"
         Write-Host "  RateLimit-Reset: $($result.Headers["X-RateLimit-Reset"])"
         Write-Host "  RateLimit-Used: $($result.Headers["x-ratelimit-used"])"
+                
         # convert the response json content
         $info = ($result.Content | ConvertFrom-Json)
+    
+        Write-Host "  Paging links: $($result.Headers["Link"])"
+        # Test for paging links and try to enumerate all pages
+        if ($null -ne $result.Headers["Link"]) {
+            #Write-Warning "Paging link detected:"
+            foreach ($page in $result.Headers["Link"].Split(", ")) {
+                            
+                #Write-Host "Found page: [$page]"
+                #Write-Host "rel next found at: [$($page.Split(";")[1])" 
+
+                if ($page.Split("; ")[1] -eq 'rel="next"') {
+                    #Write-Host "Next page is at [$page]"
+                    $almostUrl = $page.Split(";")[0]
+                    #Write-Host "Almost: $almostUrl"
+                    $linkUrl = $almostUrl.Substring(1, $almostUrl.Length - 2)
+                    Write-Host "Handling pagination link with next page at: $linkUrl"
+
+                    $nextPageInfo = CallWebRequest -url $linkUrl -userName $userName -PAT $PAT
+                    
+                    $info += $nextPageInfo
+                    return $info
+                }
+            }
+        }
+
+        return $info
     }
     catch {
         try {
             $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
         }
         catch {
-            Write-Error "Error calling api on [$url] " + $_
+            Write-Error "Error calling api on [$url]:"
+            Write-Error $_
         }
 
         if ($false -eq $skipWarnings) {
@@ -71,7 +99,7 @@ function CallWebRequest {
             
             Write-Host "$messageData"
         }
-        if ($messageData.message -eq "Not Found") {
+        if ($messageData.message -eq "Not Found" -or $messageData.message -eq "This repository is empty.") {
             if ($false -eq $skipWarnings) {
                 Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
             }
@@ -84,7 +112,7 @@ function CallWebRequest {
         }
     }
 
-    return $info
+    return "General Error loading from url [$url]"
 }
 
 function GetForkCloneUrl {
@@ -259,7 +287,7 @@ function FindAllRepos {
     $url = GetGitHubUrl "/orgs/$orgName/repos"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT
 
-    if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
+    if ($info.GetType() -eq "System.String" -And $info.StartsWith("https://docs.github.com/")) {
         
         #Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
         $url = GetGitHubUrl "users/$orgName/repos"

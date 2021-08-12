@@ -12,6 +12,7 @@ on:
 jobs:
   get-action-data:
     runs-on: ubuntu-latest
+    container: ${{ secrets.container_registry }}/powershell:7
 
     steps:
     - uses: actions/checkout@v2

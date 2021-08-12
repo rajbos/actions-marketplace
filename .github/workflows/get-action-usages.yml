@@ -4,17 +4,46 @@ on:
       - used-actions
 
   workflow_dispatch:
+
+# not available in GHES 3.1
+#permissions: read-all
     
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: ${{ secrets.container_registry }}/powershell:7
     steps:
     - uses: actions/checkout@v2
 
+    
+    - name: Test PowerShell Modules forder in github
+      run: |
+        cd /github/home/.local/share/powershell/Modules
+        ls -l
+    
+    - name: Test PowerShell Modules forder in root folder
+      if: always()
+      run: |
+        cd /root/.local/share/powershell/Modules
+        ls -l
+
+    - name: Test PowerShell Modules forder in opt folder
+      if: always()
+      run: |
+        cd /opt/microsoft/powershell/7/Modules/
+        ls -l
+
     - shell: pwsh
+      if: always()
       name: Get actions used in org data
       run: | 
-        $updateResult = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
+        $actions = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.PAT }} -marketplaceRepo ${{ github.repository }} -userName "x" -userEmail "x" )
+        # wite the file outside of the container so we can pick it up
+        Write-Host "Found actions: "
+        Write-Host $actions | ConvertTo-Json -Depth 10
+        $jsonObject = ($actions | ConvertTo-Json -Depth 10)
+        $fileName = "summarized-actions.json"
+        New-Item -Path $fileName -Value $jsonObject -Force | Out-Null
     
     - name: upload result file as artefact
       uses: actions/upload-artifact@v2
