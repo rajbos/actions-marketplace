@@ -7,11 +7,14 @@ on:
 
 # not available in GHES 3.1
 #permissions: read-all
+
+env:
+  container_registry: ${{ secrets.container_registry }}
     
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: ${{ secrets.container_registry }}/powershell:7
+    container: $container_registry/powershell:7
     steps:
     - uses: actions/checkout@v2
 
