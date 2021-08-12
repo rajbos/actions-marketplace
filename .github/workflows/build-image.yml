@@ -8,7 +8,7 @@ on:
 
 env:
   CONTAINER_REGISTRY: https://ghcr.io/rajbos/actions-marketplace
-  NAME: ${{ env.CONTAINER_REGISTRY }}/powershell
+  NAME: powershell
   TAG: 7
     
 jobs:
