@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  CONTAINER_REGISTRY: https://ghcr.io/rajbos/actions-marketplace
-  NAME: powershell
+  CONTAINER_REGISTRY: https://ghcr.io
+  NAME: ghcr.io/rajbos/actions-marketplace/powershell
   TAG: 7
     
 jobs:
