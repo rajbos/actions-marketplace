@@ -23,7 +23,7 @@ jobs:
         # docker build -t ${NAME}:${TAG} -f Dockerfile --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" .
 
     - name: Login CR
-      run: echo "${{ secrets.container_registry_token }}" | docker login ${{ env.CONTAINER_REGISTRY}} -u ${{ secrets.container_registry_username }} --password-stdin
+      run: echo "${{ secrets.CONTAINER_REGISTRY_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY}} -u ${{ secrets.CONTAINER_REGISTRY_USERNAME }} --password-stdin
 
     - name: Push image to CR
       run: docker push ${NAME}:${TAG}
