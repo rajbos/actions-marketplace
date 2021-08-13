@@ -49,8 +49,8 @@ jobs:
         $jsonObject = ($actions | ConvertTo-Json -Depth 10)
         $fileName = "summarized-actions.json"
         New-Item -Path $fileName -Value $jsonObject -Force | Out-Null
-        Write-Host "Searching for all files in [$(Get-Location)]:"
-        foreach ($item in Get-ChildItem) { Write-Host $item.Name }
+        $content = Get-Content $fileName
+        Write-Host "Written [$($content.Length)] characters to the output file [$fileName]"
     
     - name: upload result file as artefact
       uses: actions/upload-artifact@v2
