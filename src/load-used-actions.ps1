@@ -21,6 +21,9 @@ Write-Host " userEmail: [$userEmail]"
 # install a yaml parsing module (already done in the container image)
 if($env:computername -ne "ROB-XPS9700") {
     Write-Host "PSHOME: [$pshome]" 
+
+    $env:PSModulePath += ";/root/.local/share/powershell/Modules"
+
     Write-Host "PSModulePath:"
     foreach ($path in $env:PSModulePath -split ':') {
         Write-Host "- [$path]"
