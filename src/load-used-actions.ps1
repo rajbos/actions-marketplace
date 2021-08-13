@@ -22,6 +22,7 @@ Write-Host " userEmail: [$userEmail]"
 if($env:computername -ne "ROB-XPS9700") {
     Write-Host "PSHOME: [$pshome]" 
 
+    # add back the root folder to the modules path because GitHub runner seems to overwite it
     $env:PSModulePath += ":/root/.local/share/powershell/Modules"
 
     Write-Host "PSModulePath:"
@@ -38,11 +39,7 @@ if($env:computername -ne "ROB-XPS9700") {
     }
 }
 
-Set-Location /github/home/.local/share/powershell/Modules
-Write-Host "Searching for files in [$(Get-Location)]"
-foreach ($item in Get-ChildItem) { 
-    Write-Host $item.Name
-}
+
 
 function  GetActionsFromWorkflow {
     param (
