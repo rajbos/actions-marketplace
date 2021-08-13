@@ -287,7 +287,7 @@ function FindAllRepos {
     $url = GetGitHubUrl "/orgs/$orgName/repos"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT
 
-    if ($info.GetType() -eq "System.String" -And $info.StartsWith("https://docs.github.com/")) {
+    if ($info.GetType() -eq "string" -And $info.StartsWith("https://docs.github.com/")) {
         
         #Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
         $url = GetGitHubUrl "users/$orgName/repos"
