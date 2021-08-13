@@ -26,6 +26,15 @@ jobs:
         cd powershell-yaml
         ls -l
 
+    - name: Test PowerShell Modules forder in usr folder
+      if: always()
+      run: |
+        cd /usr/local/share/powershell/Modules
+        ls -l
+        cd powershell-yaml
+        ls -l
+
+
     - name: Test PowerShell Modules forder in opt folder
       if: always()
       run: |
