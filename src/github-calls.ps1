@@ -295,6 +295,20 @@ function FindAllRepos {
     else {
         Write-Host "Response type for org level repo request: [$($info.GetType())]"
         Write-Host $info
+
+        if ($info.GetType() -eq "string") {
+            Write-Host "Type IS string"
+        }
+        else {
+            Write-Host "Type is not string"
+        }
+        
+        if ($info.StartsWith("https://docs.github.com/")) {
+            Write-Host "Starts with https://docs.github.com/"
+        }
+        else {
+            Write-Host "Does not start with https://docs.github.com/"
+        }
     }
 
     Write-Host "Found [$($info.Count)] repositories in [$orgName]"
