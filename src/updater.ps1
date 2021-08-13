@@ -10,6 +10,7 @@ param (
 
 # pull in central calls library
 . $PSScriptRoot\github-calls.ps1
+. $PSScriptRoot\generic.ps1
 
 # placeholder to enable testing locally later on
 $testingLocally = $false
@@ -186,9 +187,6 @@ if ($testingLocally) {
 }
 else {
     # production flow:
-
-    # install a yaml parsing module
-    Install-Module powershell-yaml -Scope CurrentUser -Force
 
     # get action repos
     $reposWithActions = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
