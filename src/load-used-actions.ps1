@@ -161,6 +161,7 @@ function LoadAllUsedActionsFromRepos {
     $i=0
     foreach ($repo in $repos) {
         if ($null -ne $repo && $repo.full_name.Length -gt 0) {
+            Write-Host "Loading actions from repo: [$($repo.full_name)]"
             $actionsUsed = GetAllUsedActionsFromRepo -repo $repo.full_name -PAT $PAT -userName $userName
 
             $actions += $actionsUsed
