@@ -10,12 +10,12 @@ on:
   workflow_dispatch:
 
 env:
-  container_registry: https://ghcr.io/rajbos/actions-marketplace
+  container_registry: ghcr.io/rajbos/actions-marketplace
 
 jobs:
   get-action-data:
     runs-on: ubuntu-latest
-    container: https://ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
+    container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
 
     steps:
     - uses: actions/checkout@v2
