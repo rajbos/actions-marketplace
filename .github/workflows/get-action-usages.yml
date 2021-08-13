@@ -30,10 +30,7 @@ jobs:
       if: always()
       run: |
         cd /usr/local/share/powershell/
-        ls -l
-        cd powershell-yaml
-        ls -l
-
+        ls -la
 
     - name: Test PowerShell Modules forder in opt folder
       if: always()

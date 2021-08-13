@@ -22,7 +22,7 @@ Write-Host " userEmail: [$userEmail]"
 if($env:computername -ne "ROB-XPS9700") {
     Write-Host "PSHOME: [$pshome]" 
 
-    $env:PSModulePath += ";/root/.local/share/powershell/Modules"
+    $env:PSModulePath += ":/root/.local/share/powershell/Modules"
 
     Write-Host "PSModulePath:"
     foreach ($path in $env:PSModulePath -split ':') {
