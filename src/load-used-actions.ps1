@@ -11,6 +11,13 @@ param (
 # pull in central calls library
 . $PSScriptRoot\github-calls.ps1
 
+Write-Host "We're running with these parameters:"
+Write-Host " PAT.Length: [$($PAT.Length)]"
+Write-Host " orgName: [$orgName]"
+Write-Host " userName: [$userName]"
+Write-Host " marketplaceRepo: [$marketplaceRepo]"
+Write-Host " userEmail: [$userEmail]"
+
 # install a yaml parsing module (already done in the container image)
 if($env:computername -ne "ROB-XPS9700") {
     Write-Host "PSHOME: [$pshome]" 
@@ -20,7 +27,6 @@ if($env:computername -ne "ROB-XPS9700") {
     }
     try {
         Write-Host "Importing module for the yaml parsing"
-        #Install-Module powershell-yaml -Scope CurrentUser -Force
         Import-Module powershell-yaml -Force
     }
     catch {
@@ -154,18 +160,20 @@ function LoadAllUsedActionsFromRepos {
     $actions = @()
     $i=0
     foreach ($repo in $repos) {
-        $actionsUsed = GetAllUsedActionsFromRepo -repo $repo.full_name -PAT $PAT -userName $userName
+        if ($null -ne $repo && $repo.full_name.Length -gt 0) {
+            $actionsUsed = GetAllUsedActionsFromRepo -repo $repo.full_name -PAT $PAT -userName $userName
 
-        $actions += $actionsUsed
+            $actions += $actionsUsed
 
-        # comment out code below to stop after a certain number of repos to prevent issues with 
-        # rate limiting on the load file count (that is not workin correctly)
+            # comment out code below to stop after a certain number of repos to prevent issues with 
+            # rate limiting on the load file count (that is not workin correctly)
 
-        #$i++
-        #if ($i -eq 2) {
-        #    # break out on second result:
-        #    return $actions
-        #}
+            #$i++
+            #if ($i -eq 2) {
+            #    # break out on second result:
+            #    return $actions
+            #}
+        }
     }
 
     return $actions
