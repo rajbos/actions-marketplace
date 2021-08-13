@@ -12,8 +12,9 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install libssl-dev -y \
     && apt-get install gss-ntlmssp -y \
-    && apt-get install -y powershell \
-    && apt-get install curl -y 
+    && apt-get install powershell -y \
+    && apt-get install curl -y \
+    && apt-get install git -y 
 
 # install the module we need
 RUN ["pwsh", "-Command", "install-module -name powershell-yaml -Force -Repository PSGallery"]
