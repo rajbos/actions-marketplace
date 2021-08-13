@@ -292,11 +292,6 @@ function FindAllRepos {
         $url = GetGitHubUrl "users/$orgName/repos"
         $info = CallWebRequest -url $url -userName $userName -PAT $PAT
     }
-    else {
-        Write-Host "Response type for org level repo request: [$($info.GetType())]"
-        Write-Host $info
-        return $null
-    }
 
     Write-Host "Found [$($info.Count)] repositories in [$orgName]"
     return $info
