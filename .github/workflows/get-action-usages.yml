@@ -17,17 +17,13 @@ jobs:
     container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
     steps:
     - uses: actions/checkout@v2
-
-    
-    - name: Test PowerShell Modules forder in github
-      run: |
-        cd /root/.local/share/powershell/Modules
-        ls -l
     
     - name: Test PowerShell Modules forder in root folder
       if: always()
       run: |
         cd /root/.local/share/powershell/Modules
+        ls -l
+        cd powershell-yaml
         ls -l
 
     - name: Test PowerShell Modules forder in opt folder

@@ -36,6 +36,7 @@ if($env:computername -ne "ROB-XPS9700") {
 }
 
 Set-Location /github/home/.local/share/powershell/Modules
+Write-Host "Searching for files in [$(Get-Location)]"
 foreach ($item in Get-ChildItem) { 
     Write-Host $item.Name
 }
