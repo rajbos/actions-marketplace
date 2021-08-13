@@ -21,7 +21,7 @@ jobs:
     
     - name: Test PowerShell Modules forder in github
       run: |
-        cd /github/home/.local/share/powershell/Modules
+        cd /root/.local/share/powershell/Modules
         ls -l
     
     - name: Test PowerShell Modules forder in root folder
