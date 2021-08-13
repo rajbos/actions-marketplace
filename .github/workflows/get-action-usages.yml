@@ -12,7 +12,7 @@ env:
   container_registry: ghcr.io/rajbos/actions-marketplace
     
 jobs:
-  test:
+  get-action-usages:
     runs-on: ubuntu-latest
     container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
     steps:
