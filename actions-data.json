@@ -15,7 +15,15 @@
         "author": null,
         "description": "PowerShell Hello World"
       }
+    },
+    {
+      "repoName": "rajbos/github-action-load-used-actions",
+      "action": {
+        "name": "Load used actions",
+        "author": "Rob Bos",
+        "description": "Load an overview of all used actions in a GitHub Organization (or user account)"
+      }
     }
   ],
-  "lastUpdated": "20210816_0012"
+  "lastUpdated": "20210817_0012"
 }
