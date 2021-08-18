@@ -23,7 +23,15 @@
         "author": "Rob Bos",
         "description": "Load an overview of all used actions in a GitHub Organization (or user account)"
       }
+    },
+    {
+      "repoName": "rajbos/github-upload-action",
+      "action": {
+        "name": "Upload to GitHub",
+        "author": "LasyIsLazy",
+        "description": "Upload file to your GitHub repository with Node.js"
+      }
     }
   ],
-  "lastUpdated": "20210817_0012"
+  "lastUpdated": "20210818_0012"
 }
