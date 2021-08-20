@@ -17,6 +17,14 @@
       }
     },
     {
+      "repoName": "rajbos/github-action-load-available-actions",
+      "action": {
+        "name": "Load available actions",
+        "author": "Rob Bos",
+        "description": "Load an overview of all available actions in a GitHub Organization (or user account)"
+      }
+    },
+    {
       "repoName": "rajbos/github-action-load-used-actions",
       "action": {
         "name": "Load used actions",
@@ -33,5 +41,5 @@
       }
     }
   ],
-  "lastUpdated": "20210818_0012"
+  "lastUpdated": "20210820_0012"
 }
