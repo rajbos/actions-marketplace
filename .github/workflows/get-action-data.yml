@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+      - actions-update
 
   schedule:
     - cron: 7 0 * * 1-5
@@ -15,13 +16,29 @@ env:
 jobs:
   get-action-data:
     runs-on: ubuntu-latest
-    container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
 
     steps:
     - uses: actions/checkout@v2
 
-    - id: update_step
-      shell: pwsh
-      name: Get action data
-      run: | 
-        $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
+    - uses: actions/rajbos/github-action-load-available-actions@typescript
+      with: 
+        PAT: ${{ secrets.GITHUB_TOKEN }}
+        organization: rajbos
+
+    - shell: pwsh
+      name: Store json file
+      run: echo ${{ steps.load-actions.outputs.actions }} > 'actions.json'
+          
+    - name: Upload result file as artefact
+      uses: actions/upload-artifact@v2
+      with: 
+        name: actions
+        path: actions.json
+
+    # store in current repo, but in a separate branch
+
+    # - id: update_step
+    #   shell: pwsh
+    #   name: Get action data
+    #   run: | 
+    #     $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
