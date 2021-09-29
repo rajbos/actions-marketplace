@@ -22,7 +22,7 @@ jobs:
 
     - uses: rajbos/github-action-load-available-actions@typescript
       with: 
-        PAT: ${{ secrets.GITHUB_TOKEN }}
+        PAT: ${{ secrets.PAT }}
         organization: rajbos
 
     - shell: pwsh
