@@ -31,23 +31,13 @@ jobs:
       name: Store json file
       run: |
         echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
-      env:
-        data: ${{ steps.load-actions.outputs.actions }}
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
       with: 
         name: actions
         path: actions-data.json
-
-    # store in current repo, but in a separate branch
-
-    # - id: update_step
-    #   shell: pwsh
-    #   name: Get action data
-    #   run: | 
-    #     $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
-    
+   
     - name: Upload json to this repository
       #uses: LasyIsLazy/github-upload-action@v0.1.0
       uses: rajbos/github-upload-action@branch-fix
