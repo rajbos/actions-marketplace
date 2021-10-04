@@ -28,6 +28,12 @@ jobs:
         user: ${{ github.repository_owner }}
 
     - shell: pwsh
+      name: Store json file2
+      run: echo $data > 'actions-data.json'
+      with:
+        data: ${{ steps.load-actions.outputs.actions }}
+
+    - shell: pwsh
       name: Store json file
       run: echo \${{ steps.load-actions.outputs.actions }} > 'actions-data.json'
           
