@@ -28,14 +28,10 @@ jobs:
         user: ${{ github.repository_owner }}
 
     - shell: pwsh
-      name: Store json file2
+      name: Store json file
       run: echo $data > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
-
-    - shell: pwsh
-      name: Store json file
-      run: echo \${{ steps.load-actions.outputs.actions }} > 'actions-data.json'
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
