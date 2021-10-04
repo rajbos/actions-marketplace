@@ -51,7 +51,7 @@ function init() {
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
-            var actionsOwnerElement = document.getElementById('actionsOwner');
+            var actionsOwnerElement = document.getElementById('actionOwners');
 
             actionCountElement.innerHTML = json.actions.length;
             actionsOwnerElement.innerHTML = json.organization ? json.organization : json.user;
