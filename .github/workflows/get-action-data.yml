@@ -29,10 +29,9 @@ jobs:
 
     - shell: bash
       name: Store json file
-      run: | 
-        echo "hello"
-        echo "registry variable: [$container_registry]"
-        echo $data > 'actions-data.json'
+      run: |
+        
+        echo ${data//\"/"} > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
           
