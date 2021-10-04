@@ -28,6 +28,10 @@ body {
     font-weight: 600;
 }
 
+#actionOwners {
+    font-weight: 600;
+}
+
 .name {
     font-weight: 600;
     padding-right: 5px;
@@ -164,7 +168,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 .actionInfo {
     float: left;  
-    margin-right: 25px;
+    margin-right: 225px;
 }
 
 .search {

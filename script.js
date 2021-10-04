@@ -19,8 +19,8 @@ function loadFile(url, isJson, callback) {
 
 function addActionPanel(mainElement, action) {
     var panel = document.createElement('div');
-    panel.className = "panel";   
-    panel.id = action.repoName             
+    panel.className = "panel";
+    panel.id = action.repoName
     panel.innerHTML = '<div class="line"><span class="name">Repository:</span><span class="value"><a href="https://github.com/'+action.repoName+'">'+action.repoName+'</a></span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.action.name+'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.action.author || "Not set") +'</span></div>';
@@ -55,8 +55,10 @@ function init() {
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
+            var actionOwnersElement = document.getElementById('actionOwners');
 
             actionCountElement.innerHTML = json.actions.length;
+            actionOwnersElement.innerHTML = json.organization ? json.organization : json.user;
             setLastUpdated(json.lastUpdated);
 
             for(var index in json.actions) {
