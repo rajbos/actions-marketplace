@@ -52,7 +52,7 @@ function init() {
                 // response contains extra double quote at the beginning and end.
                 response = response.substring(1, response.length -2)
             }
-            response = response.replace('\"', '"');
+            //response = response.replace('\"', '"');
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
