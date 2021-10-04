@@ -48,7 +48,10 @@ function init() {
         var jsonFileToUrl = response;
 
         loadFile(jsonFileToUrl, true, function(response) {
-            response = response.replace('\"', '"');
+            if (response[2] === '"') {
+                // response contains extra double quote at the beginning and end.
+                response = response.substring(1, response.length -2)
+            }
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
