@@ -25,17 +25,17 @@ jobs:
       id: load-actions
       with: 
         PAT: ${{ secrets.PAT }}
-        user: rajbos
+        user: ${{ github.repository_owner }}
 
     - shell: pwsh
       name: Store json file
-      run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions.json'
+      run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
       with: 
         name: actions
-        path: actions.json
+        path: actions-data.json
 
     # store in current repo, but in a separate branch
 
@@ -44,3 +44,13 @@ jobs:
     #   name: Get action data
     #   run: | 
     #     $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
+    
+    - name: Upload json to this repository
+      uses: LasyIsLazy/github-upload-action@v0.0.1
+      with:
+        access-token: ${{ secrets.PAT }}
+        file-path: actions-data.json
+        username: ${{ github.repository_owner }}
+        repo: ${{ github.repository }}
+        #remote-dir:  // upload in the root
+        branch-name: gh-pages
