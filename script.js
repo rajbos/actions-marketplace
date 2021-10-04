@@ -54,7 +54,7 @@ function init() {
             var actionsOwnerElement = document.getElementById('actionsOwner');
 
             actionCountElement.innerHTML = json.actions.length;
-            actionsOwner.innerHTML = json.organization ? json.organization : json.user;
+            actionsOwnerElement.innerHTML = json.organization ? json.organization : json.user;
             setLastUpdated(json.lastUpdated);
 
             for(var index in json.actions) {
