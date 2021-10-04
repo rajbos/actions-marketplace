@@ -30,7 +30,8 @@ jobs:
     - shell: bash
       name: Store json file
       run: |
-        
+        echo $data
+        echo "---------------------------------"
         echo ${data//\\"/"} > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
