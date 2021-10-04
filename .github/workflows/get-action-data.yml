@@ -29,7 +29,9 @@ jobs:
 
     - shell: pwsh
       name: Store json file
-      run: echo $data > 'actions-data.json'
+      run: | 
+        echo "$container_registry"
+        echo "$data" > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
           
