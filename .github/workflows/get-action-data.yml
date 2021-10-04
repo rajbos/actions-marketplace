@@ -27,11 +27,11 @@ jobs:
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
 
-    - shell: pwsh
+    - shell: bash
       name: Store json file
       run: | 
         echo "hello"
-        echo $container_registry
+        echo "registry variable: [$container_registry]"
         echo $data > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
