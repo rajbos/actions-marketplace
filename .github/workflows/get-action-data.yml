@@ -46,11 +46,12 @@ jobs:
     #     $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
     
     - name: Upload json to this repository
-      uses: LasyIsLazy/github-upload-action@v0.1.0
+      #uses: LasyIsLazy/github-upload-action@v0.1.0
+      uses: rajbos/github-upload-action@branch-fix
       with:
         access-token: ${{ secrets.PAT }}
         file-path: actions-data.json
         owner: ${{ github.repository_owner }}
-        repo: actions-marketplace
+        repo: actions-marketplace # ${{ github.repository }} doesn't work with this action :-(, it'll fail over the slash and owner name
         #remote-dir:  // upload in the root
         branch-name: gh-pages
