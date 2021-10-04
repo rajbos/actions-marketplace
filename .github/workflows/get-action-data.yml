@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - uses: rajbos/github-action-load-available-actions@typescript
-      name: load available actions
+      name: Load available actions
       id: load-actions
       with: 
         PAT: ${{ secrets.PAT }}
@@ -30,9 +30,7 @@ jobs:
     - shell: bash
       name: Store json file
       run: |
-        echo $data
-        echo "---------------------------------"
-        echo ${data//\\"/"} > 'actions-data.json'
+        echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
           
