@@ -31,7 +31,7 @@ jobs:
       name: Store json file
       run: |
         
-        echo ${data//\"/"} > 'actions-data.json'
+        echo ${data//\\"/"} > 'actions-data.json'
       env:
         data: ${{ steps.load-actions.outputs.actions }}
           
