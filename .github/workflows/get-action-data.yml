@@ -50,7 +50,7 @@ jobs:
       with:
         access-token: ${{ secrets.PAT }}
         file-path: actions-data.json
-        username: ${{ github.repository_owner }}
+        owner: ${{ github.repository_owner }}
         repo: ${{ github.repository }}
         #remote-dir:  // upload in the root
         branch-name: gh-pages
