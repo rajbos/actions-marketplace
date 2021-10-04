@@ -30,7 +30,7 @@ jobs:
     - shell: pwsh
       name: Store json file2
       run: echo $data > 'actions-data.json'
-      with:
+      env:
         data: ${{ steps.load-actions.outputs.actions }}
 
     - shell: pwsh
