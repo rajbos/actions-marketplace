@@ -2,12 +2,16 @@ on:
   push:
     branches:
       - main
+      - actions-update
 
   schedule:
     - cron: 7 0 * * 1-5
 
   # run manually
   workflow_dispatch:
+
+env:
+  container_registry: ghcr.io/rajbos/actions-marketplace
 
 jobs:
   get-action-data:
@@ -16,8 +20,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - id: update_step
-      shell: pwsh
-      name: Get action data
-      run: | 
-        $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
+    - uses: rajbos/github-action-load-available-actions@typescript
+      name: Load available actions
+      id: load-actions
+      with: 
+        PAT: ${{ secrets.PAT }}
+        user: ${{ github.repository_owner }}
+
+    - shell: bash
+      name: Store json file
+      run: |
+        echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
+          
+    - name: Upload result file as artefact
+      uses: actions/upload-artifact@v2
+      with: 
+        name: actions
+        path: actions-data.json
+   
+    - name: Upload json to this repository
+      #uses: LasyIsLazy/github-upload-action@v0.1.0
+      uses: rajbos/github-upload-action@branch-fix
+      with:
+        access-token: ${{ secrets.PAT }}
+        file-path: actions-data.json
+        owner: ${{ github.repository_owner }}
+        repo: actions-marketplace # ${{ github.repository }} doesn't work with this action :-(, it'll fail over the slash and owner name
+        #remote-dir:  // upload in the root
+        branch-name: gh-pages

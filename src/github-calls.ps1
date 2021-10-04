@@ -1,25 +1,20 @@
 
-# placeholder for caching headers
-$CentralHeaders
 function Get-Headers {
     param (        
         [string] $userName,
         [string] $PAT
     )
 
-    if ($null -ne $CentralHeaders) {
-        return $CentralHeaders
-    }
-
     $pair = "$($userName):$($PAT)"
     $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
     $basicAuthValue = "Basic $encodedCreds"
 
-    $CentralHeaders = @{
-        Authorization = $basicAuthValue
+    $headers = @{
+        Authorization = $basicAuthValue   
+        "User-Agent"= $userName     
     }
 
-    return $CentralHeaders
+    return $headers
 }
 
 function CallWebRequest {
@@ -33,22 +28,61 @@ function CallWebRequest {
     )
 
     $Headers = Get-Headers -userName $userName -PAT $PAT
+    Write-Host "Calling api on url [$url]"
 
     try {
-
         $bodyContent = ($body | ConvertTo-Json) -replace '\\', '\'
-        $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -ErrorAction Stop
+        if ($verbToUse -eq "Get") {
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -ErrorAction Stop
+        }
+        else {
+            $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -ErrorAction Stop
+        }
         
         Write-Host "  StatusCode: $($result.StatusCode)"
         Write-Host "  RateLimit-Limit: $($result.Headers["X-RateLimit-Limit"])"
         Write-Host "  RateLimit-Remaining: $($result.Headers["X-RateLimit-Remaining"])"
         Write-Host "  RateLimit-Reset: $($result.Headers["X-RateLimit-Reset"])"
         Write-Host "  RateLimit-Used: $($result.Headers["x-ratelimit-used"])"
+                
         # convert the response json content
         $info = ($result.Content | ConvertFrom-Json)
+    
+        Write-Host "  Paging links: $($result.Headers["Link"])"
+        # Test for paging links and try to enumerate all pages
+        if ($null -ne $result.Headers["Link"]) {
+            #Write-Warning "Paging link detected:"
+            foreach ($page in $result.Headers["Link"].Split(", ")) {
+                            
+                #Write-Host "Found page: [$page]"
+                #Write-Host "rel next found at: [$($page.Split(";")[1])" 
+
+                if ($page.Split("; ")[1] -eq 'rel="next"') {
+                    #Write-Host "Next page is at [$page]"
+                    $almostUrl = $page.Split(";")[0]
+                    #Write-Host "Almost: $almostUrl"
+                    $linkUrl = $almostUrl.Substring(1, $almostUrl.Length - 2)
+                    Write-Host "Handling pagination link with next page at: $linkUrl"
+
+                    $nextPageInfo = CallWebRequest -url $linkUrl -userName $userName -PAT $PAT
+                    
+                    $info += $nextPageInfo
+                    return $info
+                }
+            }
+        }
+
+        return $info
     }
     catch {
-        $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
+        try {
+            $messageData = $_.ErrorDetails.Message | ConvertFrom-Json
+        }
+        catch {
+            Write-Error "Error calling api on [$url]:"
+            Write-Error $_
+        }
+
         if ($false -eq $skipWarnings) {
             Write-Host "Error calling api at [$url]:"
             Write-Host "  StatusCode: $($_.Exception.Response.StatusCode)"
@@ -60,20 +94,25 @@ function CallWebRequest {
             Write-Host "$($_.ErrorDetails.Message)"
             if ($messageData.message.StartsWith("API rate limit exceeded")) {
                 Write-Error "Rate limit exceeded. Halting execution"
-                throw
+               throw
             }
             
             Write-Host "$messageData"
         }
-        if ($messageData.message -eq "Not Found") {
+        if ($messageData.message -eq "Not Found" -or $messageData.message -eq "This repository is empty.") {
             if ($false -eq $skipWarnings) {
                 Write-Warning "Call to GitHub Api [$url] had [not found] result with documentation url [$($messageData.documentation_url)]"
             }
             return $messageData.documentation_url
         }
+
+        if ($messageData.message.StartsWith("API rate limit exceeded")) {
+            Write-Error "Rate limit exceeded. Halting execution"
+            throw
+        }
     }
 
-    return $info
+    return "General Error loading from url [$url]"
 }
 
 function GetForkCloneUrl {
@@ -85,13 +124,32 @@ function GetForkCloneUrl {
     return "https://xx:$PAT@github.com/$fork.git"
 }
 
+function GetGitHubUrl {
+    param (
+        [string] $url
+    )
+
+    if ($url.StartsWith("/")) {
+        # remove / from the start of the url
+        $url = $url.Substring(1, $url.Length - 1)
+    }
+
+    $apiUrl = $env:GITHUB_API_URL
+    if ($null -eq $apiUrl) {
+        # assume we are hitting the SaaS version of GitHub
+        $apiUrl = "https://api.github.com"
+    }
+
+    return "$apiUrl/$url"
+}
+
 function GetParentInfo {
     param (
         [string] $fork,
         [string] $PAT
     )
 
-    $repoUrl = "https://api.github.com/repos/$fork"
+    $repoUrl = GetGitHubUrl "repos/$fork"
     $info = CallWebRequest -url $repoUrl -userName $userName -PAT $PAT
 
     if ($false -eq $info.fork) {
@@ -106,6 +164,24 @@ function GetParentInfo {
 
 }
 
+function GetAllFilesInPath {
+    param (
+        [string] $repository,
+        [string] $path,
+        [string] $userName,
+        [string] $PAT
+    )
+
+    Write-Host "Checking if there are files in the path [$path] in repository [$repository]"
+
+    #force testing with private repo:
+    #$repository = "rajbos/k8s-actions-runner-test"
+    $url = GetGitHubUrl "repos/$repository/contents/$path"
+    $info = CallWebRequest -url $url -userName $userName -PAT $PAT #-skipWarnings $true
+
+    return $info
+}
+
 function GetFileInfo {
     param (
         [string] $repository,
@@ -115,7 +191,7 @@ function GetFileInfo {
     )
 
     Write-Host "Checking if the file [$fileName] exists in repository [$repository]"
-    $url = "https://api.github.com/repos/$repository/contents/$fileName"
+    $url = GetGitHubUrl "repos/$repository/contents/$fileName"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT -skipWarnings $true
 
     return $info
@@ -128,7 +204,7 @@ function GetBranchInfo {
         [string] $branchName
     )
 
-    $repoUrl = "https://api.github.com/repos/$parent/branches/$branchName"
+    $repoUrl = GetGitHubUrl "repos/$parent/branches/$branchName"
     $info = CallWebRequest -url $repoUrl -userName $userName -PAT $PAT
 
     return $info.commit.commit.author.date
@@ -143,7 +219,7 @@ function AddCommentToIssue {
         [string] $PAT
     )
 
-    $url = "https://api.github.com/repos/$repoName/issues/$number/comments"
+    $url = GetGitHubUrl "repos/$repoName/issues/$number/comments"
 
     $body = [PSCustomObject]@{
         body = $message
@@ -161,7 +237,7 @@ function CloseIssue {
         [string] $PAT
     )    
 
-    $url = "https://api.github.com/repos/$issuesRepositoryName/issues/$number"
+    $url = GetGitHubUrl "repos/$issuesRepositoryName/issues/$number"
 
     $data = [PSCustomObject]@{       
         state = "closed"
@@ -184,7 +260,7 @@ function CreateNewIssueForRepo {
         [string] $userName
     )
 
-    $url = "https://api.github.com/repos/$issuesRepositoryName/issues"
+    $url = GetGitHubUrl "repos/$issuesRepositoryName/issues"
 
     $data = [PSCustomObject]@{
         title = $title
@@ -204,16 +280,33 @@ function FindAllRepos {
         [string] $PAT
     )
 
-    $url = "https://api.github.com/orgs/$orgName/repos"
+    # todo: add support for pagination
+    # check if we can find all repos that are forks with this call, so we can retrieve the normal repos with a GraphQL query (which could include the information if the repo has workflow files
+
+    # check if we have an org with repos available, or that we have a user account that we need to get all repos for
+    $url = GetGitHubUrl "/orgs/$orgName/repos"
     $info = CallWebRequest -url $url -userName $userName -PAT $PAT
 
-    if ($info -eq "https://docs.github.com/rest/reference/repos#list-organization-repositories") {
-        
+    if ($info.GetType() -eq [string] -And $info.StartsWith("https://docs.github.com/")) {
         Write-Warning "Error loading information from org with name [$orgName], trying with user based repository list"
-        $url = "https://api.github.com/users/$orgName/repos"
+        $url = GetGitHubUrl "users/$orgName/repos"
         $info = CallWebRequest -url $url -userName $userName -PAT $PAT
     }
 
     Write-Host "Found [$($info.Count)] repositories in [$orgName]"
     return $info
+}
+
+function GetRawFile {
+    param (
+        [string] $url,
+        [string] $PAT
+    )
+
+    Write-Host "Loading file content from url [$url]"
+    
+    $Headers = Get-Headers -userName $userName -PAT $PAT
+    $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method Get -ErrorAction Stop | Select-Object -Expand Content
+
+    return $result
 }

@@ -28,6 +28,10 @@ body {
     font-weight: 600;
 }
 
+#actionOwners {
+    font-weight: 600;
+}
+
 .name {
     font-weight: 600;
     padding-right: 5px;

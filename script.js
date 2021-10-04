@@ -48,16 +48,13 @@ function init() {
         var jsonFileToUrl = response;
 
         loadFile(jsonFileToUrl, true, function(response) {
-            // if (response[0] === '"') {
-            //     // response contains extra double quote at the beginning and end.
-            //     response = response.substring(1, response.length -2)
-            // }
-            //response = response.replace('\"', '"');
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
+            var actionsOwnerElement = document.getElementById('actionsOwner');
 
             actionCountElement.innerHTML = json.actions.length;
+            actionsOwner.innerHTML = json.organization ? json.organization : json.user;
             setLastUpdated(json.lastUpdated);
 
             for(var index in json.actions) {

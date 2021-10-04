@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+      - used-actions
+
+  workflow_dispatch:
+
+env:
+  CONTAINER_REGISTRY: https://ghcr.io
+  NAME: ghcr.io/rajbos/actions-marketplace/powershell
+  TAG: 7
+    
+jobs:
+  build-and-push-container:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        docker build -t ${NAME}:${TAG} -f Dockerfile . 
+        # for internal usage with a proxy, use the line below
+        # docker build -t ${NAME}:${TAG} -f Dockerfile --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" .
+
+    - name: Login CR
+      run: echo "${{ secrets.CONTAINER_REGISTRY_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY}} -u ${{ secrets.CONTAINER_REGISTRY_USERNAME }} --password-stdin
+
+    - name: Push image to CR
+      run: docker push ${NAME}:${TAG}
