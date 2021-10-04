@@ -44,10 +44,11 @@ function setLastUpdated(lastUpdated) {
 
 function init() {
     loadFile(jsonFileToUrl, false, function(response) {
-        console.log('found file with content' + response);
+        console.log('found file with content: ' + response);
         var jsonFileToUrl = response;
 
         loadFile(jsonFileToUrl, true, function(response) {
+            response = response.replace('\"', '"');
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
