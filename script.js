@@ -48,7 +48,7 @@ function init() {
         var jsonFileToUrl = response;
 
         loadFile(jsonFileToUrl, true, function(response) {
-            if (response[2] === '"') {
+            if (response[0] === '"') {
                 // response contains extra double quote at the beginning and end.
                 response = response.substring(1, response.length -2)
             }
