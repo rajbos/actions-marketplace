@@ -48,6 +48,7 @@ function init() {
         var jsonFileToUrl = response;
 
         loadFile(jsonFileToUrl, true, function(response) {
+            response = response.replace('\"', '"');
             var json = JSON.parse(response);
             var mainElement = document.getElementById('main');
             var actionCountElement = document.getElementById('actionCount');
