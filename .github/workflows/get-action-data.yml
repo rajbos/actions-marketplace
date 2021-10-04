@@ -46,7 +46,7 @@ jobs:
     #     $updateResult = (.\src\updater.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.GITHUB_TOKEN }} -marketplaceRepo ${{ github.repository }} -userName "${{ secrets.username }}" -userEmail "${{ secrets.useremail }}" )
     
     - name: Upload json to this repository
-      uses: LasyIsLazy/github-upload-action@v0.0.1
+      uses: LasyIsLazy/github-upload-action@v0.1.0
       with:
         access-token: ${{ secrets.PAT }}
         file-path: actions-data.json
