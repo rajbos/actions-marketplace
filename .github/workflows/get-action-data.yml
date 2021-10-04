@@ -51,6 +51,6 @@ jobs:
         access-token: ${{ secrets.PAT }}
         file-path: actions-data.json
         owner: ${{ github.repository_owner }}
-        repo: ${{ github.repository }}
+        repo: actions-marketplace
         #remote-dir:  // upload in the root
         branch-name: gh-pages
