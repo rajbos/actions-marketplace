@@ -62,9 +62,7 @@ jobs:
               $project: ID!
               $item: ID!
               $status_field: ID!
-              $status_value: String!
-              $date_field: ID!
-              $date_value: String!
+              $status_value: String!              
             ) {
               set_status: updateProjectNextItemField(input: {
                 projectId: $project
