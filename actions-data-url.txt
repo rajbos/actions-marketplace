@@ -1,1 +1,1 @@
-https://raw.githubusercontent.com/rajbos/actions-marketplace/gh-pages/actions-data.json
+/actions-data.json
