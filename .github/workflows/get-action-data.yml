@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
     - uses: rajbos/github-action-load-available-actions@v1.2.12
       name: Load available actions
       id: load-actions
