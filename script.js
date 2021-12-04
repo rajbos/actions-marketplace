@@ -33,11 +33,11 @@ function setLastUpdated(lastUpdated) {
     var splitted = lastUpdated.split("_");
     var date = splitted[0];
     var time = splitted[1];
-
-    var year = date.substring(0, 4);
-    var month = date.substring(4, 6);
-    var day = date.substring(6, 8);
     var splittedTime = time.split(/(?=(?:..)*$)/);
+
+    var year = parseInt(date.substring(0, 4));
+    var month = parseInt(date.substring(4, 6));
+    var day = parseInt(date.substring(6, 8));
 
     var date = new Date(year, month, day, splittedTime[0], splittedTime[1]);
 
