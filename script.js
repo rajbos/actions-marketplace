@@ -34,10 +34,12 @@ function setLastUpdated(lastUpdated) {
     var date = splitted[0];
     var time = splitted[1];
 
-    var splittedDate = date.split(/(?=(?:..)*$)/);
+    var year = date.substring(0, 4);
+    var month = date.substring(4, 6);
+    var day = date.substring(6, 8);
     var splittedTime = time.split(/(?=(?:..)*$)/);
 
-    var date = new Date(splittedDate[0]+splittedDate[1],splittedDate[2],splittedDate[3], splittedTime[0], splittedTime[1]);
+    var date = new Date(year, month, day, splittedTime[0], splittedTime[1]);
 
     document.getElementById('lastUpdated').innerHTML = date.toLocaleString();
 }
