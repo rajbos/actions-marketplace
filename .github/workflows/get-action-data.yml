@@ -6,7 +6,6 @@ on:
   schedule:
     - cron: 7 0 * * 1-5
 
-  # run manually
   workflow_dispatch:
 
 jobs:
@@ -21,10 +20,8 @@ jobs:
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
 
-    - shell: bash
-      name: Store json file
-      run: |
-        echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
+    - name: Store json file
+      run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
@@ -33,7 +30,6 @@ jobs:
         path: actions-data.json
    
     - name: Upload json to this repository
-      #uses: LasyIsLazy/github-upload-action@v0.1.0
       uses: rajbos-actions/github-upload-action@v0.2.0
       with:
         access-token: ${{ secrets.PAT }}
