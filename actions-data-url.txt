@@ -1,1 +1,1 @@
-/actions-data.json
+/actions-marketplace/actions-data.json
