@@ -39,7 +39,7 @@ function setLastUpdated(lastUpdated) {
     var month = parseInt(date.substring(4, 6));
     var day = parseInt(date.substring(6, 8));
 
-    var date = new Date(year, month, day, splittedTime[0], splittedTime[1]);
+    var date = new Date(year, month, day, splittedTime[0], splittedTime[1], 0, 0);
 
     document.getElementById('lastUpdated').innerHTML = date.toLocaleString();
 }
