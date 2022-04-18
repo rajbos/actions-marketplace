@@ -22,20 +22,13 @@ jobs:
       with: 
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
-
-    - shell: bash
-      name: Store json file
-      if: 1 == 2
-      run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
-      
-    - run: npm install fs
-    
+         
+    # todo: convert this part into an action to make it more transferable. Don't forget to update the readme then!
+    - run: npm install fs    
     - uses: actions/github-script@v5
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`
-
-          //todo: enable this:
           const fs = require("fs");
 
           const fileName = 'actions-data.json'
