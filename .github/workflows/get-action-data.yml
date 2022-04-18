@@ -1,3 +1,5 @@
+name: Get available action data
+
 on: 
   push:
     branches:
@@ -20,11 +22,21 @@ jobs:
       with: 
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
+         
+    # todo: convert this part into an action to make it more transferable. Don't forget to update the readme then!
+    - run: npm install fs    
+    - uses: actions/github-script@v5
+      with:
+        script: |
+          let actions = `${{ steps.load-actions.outputs.actions }}`
+          const fs = require("fs");
 
-    - shell: bash
-      name: Store json file
-      run: |
-        echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
+          const fileName = 'actions-data.json'
+          fs.writeFileSync(fileName, actions, function(err) {
+            if(err) {
+              return console.log("error")
+            }
+          })          
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
