@@ -1,3 +1,5 @@
+name: Get available action data
+
 on: 
   push:
     branches:
