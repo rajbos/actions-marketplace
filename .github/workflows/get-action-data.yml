@@ -25,6 +25,7 @@ jobs:
 
     - shell: bash
       name: Store json file
+      if: never()
       run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
       
     - uses: actions/github-script@v5
