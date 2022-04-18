@@ -23,9 +23,13 @@ jobs:
 
     - shell: bash
       name: Store json file
-      run: |
-        values=${{ steps.load-actions.outputs.actions }}
-        echo $values > 'actions-data.json'
+      run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
+      
+    - uses: github/action-script@v5
+      with:
+        script: |
+          let actions = `${{ steps.load-actions.outputs.actions }}`
+          echo $actions > 'actions-data2.json'
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
