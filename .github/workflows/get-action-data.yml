@@ -27,7 +27,7 @@ jobs:
       name: Store json file
       run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
       
-    - uses: github/action-script@v5
+    - uses: actions/github-script@v5
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`
