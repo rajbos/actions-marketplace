@@ -28,11 +28,22 @@ jobs:
       if: 1 == 2
       run: echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
       
+    - run: npm install fs
+    
     - uses: actions/github-script@v5
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`
-          echo $actions > 'actions-data2.json'
+
+          //todo: enable this:
+          const fs = require("fs");
+
+          const fileName = 'actions-data.json'
+          fs.writeFileSync(fileName, actions, function(err) {
+            if(err) {
+              return console.log("error")
+            }
+          })          
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
