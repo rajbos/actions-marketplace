@@ -24,7 +24,7 @@ jobs:
     - shell: bash
       name: Store json file
       run: |
-        echo '${{ steps.load-actions.outputs.actions }}' > 'actions-data.json'
+        echo '${{ fromJSON(steps.load-actions.outputs.actions) }}' > 'actions-data.json'
           
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v2
