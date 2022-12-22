@@ -1,6 +1,6 @@
 on:
-  push: 
-    branches: 
+  push:
+    branches:
       - used-actions
 
   workflow_dispatch:
@@ -9,15 +9,15 @@ on:
 #permissions: read-all
 
 env:
-  container_registry: ghcr.io/rajbos/actions-marketplace
-    
+  container_registry: ghcr.io/test-gha-market/actions-marketplace
+
 jobs:
   get-action-usages:
     runs-on: ubuntu-latest
-    container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
+    container: ghcr.io/test-gha-market/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
     steps:
-    - uses: actions/checkout@v2
-    
+    - uses: actions/checkout@v3
+
     - name: Test PowerShell Modules forder in root folder
       if: always()
       run: |
@@ -41,8 +41,8 @@ jobs:
     - shell: pwsh
       if: always()
       name: Get actions used in org data
-      run: | 
-        $actions = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.PAT }} -marketplaceRepo ${{ github.repository }} -userName "x" -userEmail "x" )
+      run: |
+        $actions = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.PAT_GITHUB }} -marketplaceRepo ${{ github.repository }} -userName "x" -userEmail "x" )
         # wite the file outside of the container so we can pick it up
         Write-Host "Found actions: "
         Write-Host $actions | ConvertTo-Json -Depth 10
@@ -51,9 +51,9 @@ jobs:
         New-Item -Path $fileName -Value $jsonObject -Force | Out-Null
         $content = Get-Content $fileName
         Write-Host "Written [$($content.Length)] characters to the output file [$fileName]"
-    
+
     - name: upload result file as artefact
-      uses: actions/upload-artifact@v2
-      with: 
+      uses: actions/upload-artifact@v3
+      with:
         name: summarized-actions
         path: summarized-actions.json
