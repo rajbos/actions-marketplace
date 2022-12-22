@@ -8,17 +8,17 @@ on:
 
 env:
   CONTAINER_REGISTRY: https://ghcr.io
-  NAME: ghcr.io/rajbos/actions-marketplace/powershell
+  NAME: ghcr.io/test-gha-market/actions-marketplace/powershell
   TAG: 7
-    
+
 jobs:
   build-and-push-container:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build
       run: |
-        docker build -t ${NAME}:${TAG} -f Dockerfile . 
+        docker build -t ${NAME}:${TAG} -f Dockerfile .
         # for internal usage with a proxy, use the line below
         # docker build -t ${NAME}:${TAG} -f Dockerfile --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" .
 
