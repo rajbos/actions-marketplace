@@ -1,6 +1,6 @@
 name: Get available action data
 
-on: 
+on:
   push:
     branches:
       - main
@@ -16,16 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: devops-actions/load-available-actions@v1.2.12
+    - uses: test-gha-market/load-available-actions@v1.2.12
       name: Load available actions
       id: load-actions
-      with: 
+      with:
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
-         
+
     # todo: convert this part into an action to make it more transferable. Don't forget to update the readme then!
-    - run: npm install fs    
-    - uses: actions/github-script@v5
+    - run: npm install fs
+    - uses: actions/github-script@v6
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`
@@ -36,17 +36,17 @@ jobs:
             if(err) {
               return console.log("error")
             }
-          })          
-          
+          })
+
     - name: Upload result file as artefact
-      uses: actions/upload-artifact@v2
-      with: 
+      uses: actions/upload-artifact@v3
+      with:
         name: actions
         path: actions-data.json
-   
+
     - name: Upload json to this repository
       #uses: LasyIsLazy/github-upload-action@v0.1.0
-      uses: rajbos-actions/github-upload-action@v0.2.0
+      uses: test-gha-market/github-upload-action@v0.2.0
       with:
         access-token: ${{ secrets.PAT }}
         file-path: actions-data.json
