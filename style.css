@@ -163,12 +163,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 .actionInfo {
-    float: left;  
+    float: left;
     margin-right: 25px;
 }
 
 .search {
-    float: left;                
+    float: left;
 }
 
 .search input {
