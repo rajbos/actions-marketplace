@@ -10,6 +10,7 @@ on:
 
 env:
   container_registry: ghcr.io/test-gha-market/actions-marketplace
+  github_org: test-org-for-gha-market
 
 jobs:
   get-action-usages:
@@ -42,7 +43,7 @@ jobs:
       if: always()
       name: Get actions used in org data
       run: |
-        $actions = (.\src\load-used-actions.ps1 -orgName ${{ github.repository_owner }} -PAT ${{ secrets.PAT_GITHUB }} -marketplaceRepo ${{ github.repository }} -userName "x" -userEmail "x" )
+        $actions = (.\src\load-used-actions.ps1 -orgName ${{ env.github_org }} -PAT ${{ secrets.PAT_GITHUB }} -marketplaceRepo ${{ github.repository }} -userName "x" -userEmail "x" )
         # wite the file outside of the container so we can pick it up
         Write-Host "Found actions: "
         Write-Host $actions | ConvertTo-Json -Depth 10
