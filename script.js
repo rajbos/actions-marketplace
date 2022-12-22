@@ -2,9 +2,9 @@ var jsonFileToUrl = 'actions-data-url.txt';
 var jsonUrl = 'actions-data.json';
 
 function loadFile(url, isJson, callback) {
-    var xobj = new XMLHttpRequest();                
+    var xobj = new XMLHttpRequest();
     if (isJson) {
-        xobj.overrideMimeType("application/json");                    
+        xobj.overrideMimeType("application/json");
     }
 
     xobj.open('GET', url, true);
@@ -14,13 +14,13 @@ function loadFile(url, isJson, callback) {
             callback(xobj.responseText);
         }
     };
-    xobj.send(null);  
+    xobj.send(null);
 }
 
 function addActionPanel(mainElement, action) {
     var panel = document.createElement('div');
-    panel.className = "panel";   
-    panel.id = action.repoName             
+    panel.className = "panel";
+    panel.id = action.repoName
     panel.innerHTML = '<div class="line"><span class="name">Repository:</span><span class="value"><a href="https://github.com/'+action.repoName+'">'+action.repoName+'</a></span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.action.name+'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.action.author || "Not set") +'</span></div>';
@@ -64,4 +64,3 @@ function init() {
         )}
     )
 }
-    
