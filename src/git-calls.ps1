@@ -25,7 +25,7 @@ function CheckBranchNotExists{
         [string] $newBranchName
     )
 
-    $branches = git branch --list --all 
+    $branches = git branch --list --all
     Write-Host "Existing branches found: [$branches]"
     Write-Host "Desired new branch name: [$newBranchName]"
     # search without spaces and the * for the current branch
@@ -55,7 +55,7 @@ function GetNewBranchName {
 }
 
 function CreateNewBranch {
-   
+
     if ($true -eq (CheckBranchNotExists -newBranchName $branchName)) {
         Write-Host "Creating new branchName [$branchName]"
         git checkout -b $branchName
@@ -65,7 +65,7 @@ function CreateNewBranch {
         git checkout $branchName
         git pull
     }
-    
+
     return $branchName
    }
 
@@ -97,8 +97,8 @@ function SetupGit {
     else {
         $url = "https://$RemoteUrl"
     }
-    
-    $repoName="~/repo-src-folder" 
+
+    $repoName="~/repo-src-folder"
     if (Test-Path -Path $repoName -PathType Container) {
         Write-Host "Clearing folder [$repoName] before cloning"
         Remove-Item $repoName -Recurse -Force
@@ -133,7 +133,7 @@ function SetupGit {
 
     Write-Host "Moving into directory [$repositoryName]"
     Set-Location $repositoryName
-        
+
     git config user.email $gitUserEmail
     git config user.name $gitUserName
 }

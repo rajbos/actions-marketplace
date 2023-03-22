@@ -58,19 +58,19 @@ function CheckAllReposInOrg {
 
         #todo: check for action.yaml as well
         $hasActionFile  = GetFileAvailable -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
-        
+
         if ($hasActionFile) {
             Write-Host "Found action.yml in repository [$($repo.full_name)], loading the file contents"
             if ($repo.full_name -eq "rajbos/mutation-testing-elements") {
                 Write-Host "Break here for testing"
             }
-                        
+
             $fileInfo = GetFileInfo -repository $repo.full_name -fileName 'action.yml' -PAT $PAT -userName $userName
 
             $repoInfo = GetRawFile -url $fileInfo.download_url
             if ($repoInfo) {
-                Write-Host "Loaded action.yml information"     
-                
+                Write-Host "Loaded action.yml information"
+
                 $parsedYaml = ConvertFrom-Yaml $repoInfo
 
                 $repoData = [PSCustomObject]@{
@@ -83,7 +83,7 @@ function CheckAllReposInOrg {
                 }
 
                 $reposWithActions += $repoData
-            } 
+            }
             else {
                 Write-Host "Cannot load action.yml"
             }
@@ -120,12 +120,12 @@ function UploadActionsDataToGitHub {
         [string] $repositoryName,
         [string] $repositoryOwner
     )
-    
+
     $marketplaceRepoUrl = "https://github.com/$marketplaceRepo.git"
     $branchName = "gh-pages"
     $dataFileUrl = "https://raw.githubusercontent.com/$marketplaceRepo/$branchName/actions-data.json"
     Write-Host "Using dataFileUrl [$dataFileUrl]"
-    
+
     . $PSScriptRoot\git-calls.ps1 -PAT $PAT -$gitUserName $userName `
                                     -RemoteUrl $marketplaceRepoUrl `
                                     -gitUserEmail $userEmail `
@@ -134,7 +134,7 @@ function UploadActionsDataToGitHub {
 
     # git checkout
     SetupGit
-    
+
     CreateNewBranch
 
     # store json result on disk
@@ -143,9 +143,9 @@ function UploadActionsDataToGitHub {
     $dataFileUrl > .\actions-data-url.txt
 
     CommitAndPushBranch
-    
+
     Write-Host "Cleaning up local Git folder"
-    CleanupGit   
+    CleanupGit
 }
 
 function TestLocally {
@@ -163,7 +163,7 @@ function TestLocally {
     # load the repos with updates if we don't have them available yet
     if($null -eq $env:reposWithUpdates) {
         $repos = CheckAllReposInOrg -orgName $orgName -userName $userName -PAT $PAT
-        $env:reposWithUpdates = $repos | ConvertTo-Json        
+        $env:reposWithUpdates = $repos | ConvertTo-Json
     }
 
     if ($env:reposWithUpdates) {
@@ -175,7 +175,7 @@ function TestLocally {
 }
 
 # uncomment to test locally
-#$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true; 
+#$orgName = "rajbos-actions"; $userName = "xxx"; $PAT = $env:GitHubPAT; $testingLocally = $true;
 #$marketplaceRepo = "rajbos/actions-marketplace"; $userEmail = "raj.bos@gmail.com"; $userName = "Rob Bos";
 
 # main function calls
