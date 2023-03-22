@@ -1,6 +1,6 @@
 
 function Get-Headers {
-    param (        
+    param (
         [string] $userName,
         [string] $PAT
     )
@@ -10,8 +10,8 @@ function Get-Headers {
     $basicAuthValue = "Basic $encodedCreds"
 
     $headers = @{
-        Authorization = $basicAuthValue   
-        "User-Agent"= $userName     
+        Authorization = $basicAuthValue
+        "User-Agent"= $userName
     }
 
     return $headers
@@ -38,24 +38,24 @@ function CallWebRequest {
         else {
             $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method $verbToUse -Body $bodyContent -ErrorAction Stop
         }
-        
+
         Write-Host "  StatusCode: $($result.StatusCode)"
         Write-Host "  RateLimit-Limit: $($result.Headers["X-RateLimit-Limit"])"
         Write-Host "  RateLimit-Remaining: $($result.Headers["X-RateLimit-Remaining"])"
         Write-Host "  RateLimit-Reset: $($result.Headers["X-RateLimit-Reset"])"
         Write-Host "  RateLimit-Used: $($result.Headers["x-ratelimit-used"])"
-                
+
         # convert the response json content
         $info = ($result.Content | ConvertFrom-Json)
-    
+
         Write-Host "  Paging links: $($result.Headers["Link"])"
         # Test for paging links and try to enumerate all pages
         if ($null -ne $result.Headers["Link"]) {
             #Write-Warning "Paging link detected:"
             foreach ($page in $result.Headers["Link"].Split(", ")) {
-                            
+
                 #Write-Host "Found page: [$page]"
-                #Write-Host "rel next found at: [$($page.Split(";")[1])" 
+                #Write-Host "rel next found at: [$($page.Split(";")[1])"
 
                 if ($page.Split("; ")[1] -eq 'rel="next"') {
                     #Write-Host "Next page is at [$page]"
@@ -65,7 +65,7 @@ function CallWebRequest {
                     Write-Host "Handling pagination link with next page at: $linkUrl"
 
                     $nextPageInfo = CallWebRequest -url $linkUrl -userName $userName -PAT $PAT
-                    
+
                     $info += $nextPageInfo
                     return $info
                 }
@@ -90,13 +90,13 @@ function CallWebRequest {
             Write-Host "  RateLimit-Remaining: $($_.Exception.Response.Headers.GetValues("X-RateLimit-Remaining"))"
             Write-Host "  RateLimit-Reset: $($_.Exception.Response.Headers.GetValues("X-RateLimit-Reset"))"
             Write-Host "  RateLimit-Used: $($_.Exception.Response.Headers.GetValues("x-ratelimit-used"))"
-            
+
             Write-Host "$($_.ErrorDetails.Message)"
             if ($messageData.message.StartsWith("API rate limit exceeded")) {
                 Write-Error "Rate limit exceeded. Halting execution"
                throw
             }
-            
+
             Write-Host "$messageData"
         }
         if ($messageData.message -eq "Not Found" -or $messageData.message -eq "This repository is empty.") {
@@ -235,11 +235,11 @@ function CloseIssue {
         [int] $number,
         [string] $userName,
         [string] $PAT
-    )    
+    )
 
     $url = GetGitHubUrl "repos/$issuesRepositoryName/issues/$number"
 
-    $data = [PSCustomObject]@{       
+    $data = [PSCustomObject]@{
         state = "closed"
     }
 
@@ -250,7 +250,7 @@ function CloseIssue {
 }
 
 
-function CreateNewIssueForRepo { 
+function CreateNewIssueForRepo {
     param (
         [Object] $repoInfo,
         [string] $issuesRepositoryName,
@@ -304,7 +304,7 @@ function GetRawFile {
     )
 
     Write-Host "Loading file content from url [$url]"
-    
+
     $Headers = Get-Headers -userName $userName -PAT $PAT
     $result = Invoke-WebRequest -Uri $url -Headers $Headers -Method Get -ErrorAction Stop | Select-Object -Expand Content
 

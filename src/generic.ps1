@@ -1,7 +1,7 @@
 
 # install a yaml parsing module (already done in the container image)
 if($env:computername -ne "ROB-XPS9700") {
-    Write-Host "PSHOME: [$pshome]" 
+    Write-Host "PSHOME: [$pshome]"
 
     # add back the root folder to the modules path because GitHub runner seems to overwite it
     $env:PSModulePath += ":/root/.local/share/powershell/Modules"

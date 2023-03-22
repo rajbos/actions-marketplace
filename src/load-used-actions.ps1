@@ -69,14 +69,14 @@ function GetAllUsedActionsFromRepo {
         Write-Host "Could not get workflow files from [$repo]"
         return;
     }
-    
+
     # create hastable to store the results in
     $actionsInRepo = @()
 
     Write-Host "Found [$($workflowFiles.Length)] files in the workflows directory"
     foreach ($workflowFile in $workflowFiles) {
         try {
-            if ($null -ne $workflowFile.download_url -and $workflowFile.download_url.Length -gt 0 -and $workflowFile.download_url.Split("?")[0].EndsWith(".yml")) { 
+            if ($null -ne $workflowFile.download_url -and $workflowFile.download_url.Length -gt 0 -and $workflowFile.download_url.Split("?")[0].EndsWith(".yml")) {
                 $workflow = GetRawFile -url $workflowFile.download_url -PAT $PAT
                 $actions = GetActionsFromWorkflow -workflow $workflow -workflowFileName $workflowFile.name -repo $repo
 
@@ -123,7 +123,7 @@ function SummarizeActionsUsed {
                         repo = $action.repo
                         workflowFileName = $action.workflowFileName
                     }
-                )           
+                )
             }
             $summarized += $newItem
         }
@@ -150,7 +150,7 @@ function LoadAllUsedActionsFromRepos {
 
             $actions += $actionsUsed
 
-            # comment out code below to stop after a certain number of repos to prevent issues with 
+            # comment out code below to stop after a certain number of repos to prevent issues with
             # rate limiting on the load file count (that is not workin correctly)
 
             #$i++
@@ -173,7 +173,7 @@ function main() {
     $actionsFound = LoadAllUsedActionsFromRepos -repos $repos -userName $userName -PAT $PAT -marketplaceRepo $marketplaceRepo
 
     if ($actionsFound.Count -gt 0) {
-                
+
         $summarizeActions = SummarizeActionsUsed -actions $actionsFound
 
         Write-Host "Found [$($actionsFound.Count)] actions used in workflows with [$($summarizeActions.Count) unique actions]"

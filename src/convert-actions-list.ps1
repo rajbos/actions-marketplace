@@ -24,7 +24,7 @@ foreach ($action in $actions) {
                     repo = $action.repo
                     workflowFileName = $action.workflowFileName
                 }
-            )           
+            )
         }
         $summarized += $newItem
     }
