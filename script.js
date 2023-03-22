@@ -22,9 +22,9 @@ function addActionPanel(mainElement, action) {
     panel.className = "panel";
     panel.id = action.repoName
     panel.innerHTML = '<div class="line"><span class="name">Repository:</span><span class="value"><a href="https://github.com/test-gha-market/'+action.repoName+'">'+action.repoName+'</a></span></div>';
-    panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.action.name+'</span></div>';
-    panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.action.author || "Not set") +'</span></div>';
-    panel.innerHTML += '<div class="line"><span class="name">Description:</span><div class="value description">'+action.action.description+'</div></div>';
+    panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.name+'</span></div>';
+    panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.author || "Not set") +'</span></div>';
+    panel.innerHTML += '<div class="line"><span class="name">Description:</span><div class="value description">'+action.description+'</div></div>';
 
     mainElement.appendChild(panel);
 }
