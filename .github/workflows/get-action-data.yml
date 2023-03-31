@@ -37,6 +37,7 @@ jobs:
             console.log(`File with actions is written`);
           }
           catch(err) {
+            console.log(`FAILURE!!!`);
             console.error(err);
           }
 
