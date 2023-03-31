@@ -33,14 +33,14 @@ jobs:
           const fs = require("fs");
 
           const fileName = 'actions-data.json';
-          try {
-            fs.writeFileSync(fileName, actions);
-            console.log(`File with actions is written`);
-          }
-          catch(err) {
-            console.log(`FAILURE!!!`);
-            console.error(err);
-          }
+          //try {
+          //  fs.writeFileSync(fileName, actions);
+          //  console.log(`File with actions is written`);
+          //}
+          //catch(err) {
+          //  console.log(`FAILURE!!!`);
+          //  console.error(err);
+          //}
 
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v3
