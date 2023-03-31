@@ -34,6 +34,7 @@ jobs:
           const fileName = 'actions-data.json'
           try {
             fs.writeFileSync(fileName, actions)
+            console.log(`File with actions is written`)
           }
           catch(err) {
             console.error(err)
