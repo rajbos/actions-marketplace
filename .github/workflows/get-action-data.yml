@@ -28,19 +28,14 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          # // let actions = `JSON.parse(${{ steps.load-actions.outputs.actions }})`;
-          console.log(actions);
+          let actions = '${{ steps.load-actions.outputs.actions }}';
           const fs = require("fs");
-
           const fileName = 'actions-data.json';
-          try {
-            fs.writeFileSync(fileName, ${{ steps.load-actions.outputs.actions }});
-            console.log(`File with actions is written`);
-          }
-          catch(err) {
-            console.log(`FAILURE!!!`);
-            console.error(err);
-          }
+          fs.writeFileSync(fileName, actions, function(err) {
+            if(err) {
+              return console.log("error")
+            }
+          })
 
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v3
