@@ -28,16 +28,16 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          let actions = `${{ steps.load-actions.outputs.actions }}`
-          const fs = require("fs")
+          let actions = `${{ steps.load-actions.outputs.actions }}`;
+          const fs = require("fs");
 
-          const fileName = 'actions-data.json'
+          const fileName = 'actions-data.json';
           try {
-            fs.writeFileSync(fileName, actions)
-            console.log(`File with actions is written`)
+            fs.writeFileSync(fileName, actions);
+            console.log(`File with actions is written`);
           }
           catch(err) {
-            console.error(err)
+            console.error(err);
           }
 
     - name: Upload result file as artefact
