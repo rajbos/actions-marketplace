@@ -32,11 +32,12 @@ jobs:
           const fs = require("fs")
 
           const fileName = 'actions-data.json'
-          fs.writeFileSync(fileName, actions, function(err) {
-            if(err) {
-              return console.log("error")
-            }
-          })
+          try {
+            fs.writeFileSync(fileName, actions)
+          }
+          catch(err) {
+            console.error(err)
+          }
 
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v3
