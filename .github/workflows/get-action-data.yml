@@ -28,13 +28,13 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          let actions = `JSON.parse(${{ steps.load-actions.outputs.actions }})`;
+          # // let actions = `JSON.parse(${{ steps.load-actions.outputs.actions }})`;
           console.log(actions);
           const fs = require("fs");
 
           const fileName = 'actions-data.json';
           try {
-            fs.writeFileSync(fileName, actions);
+            fs.writeFileSync(fileName, ${{ steps.load-actions.outputs.actions }});
             console.log(`File with actions is written`);
           }
           catch(err) {
