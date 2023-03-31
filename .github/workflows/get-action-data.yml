@@ -28,7 +28,7 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          //let actions = `${{ steps.load-actions.outputs.actions }}`;
+          let actions = `${{ steps.load-actions.outputs.actions }}`;
           //console.log(actions);
           const fs = require("fs");
 
