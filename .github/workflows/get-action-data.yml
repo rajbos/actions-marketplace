@@ -29,6 +29,7 @@ jobs:
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`;
+          console.log(actions);
           const fs = require("fs");
 
           const fileName = 'actions-data.json';
