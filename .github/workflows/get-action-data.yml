@@ -25,7 +25,7 @@ jobs:
          
     # todo: convert this part into an action to make it more transferable. Don't forget to update the readme then!
     - run: npm install fs    
-    - uses: actions/github-script@v5
+    - uses: actions/github-script@v6
       with:
         script: |
           let actions = `${{ steps.load-actions.outputs.actions }}`
