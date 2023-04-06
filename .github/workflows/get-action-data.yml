@@ -16,33 +16,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: devops-actions/load-available-actions@v2.1.2
+    - uses: devops-actions/load-available-actions@v2.1.3
       name: Load available actions
       id: load-actions
       with: 
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
-         
-    # todo: convert this part into an action to make it more transferable. Don't forget to update the readme then!
-    - run: npm install fs    
-    - uses: actions/github-script@v6
-      with:
-        script: |
-          let actions = `${{ steps.load-actions.outputs.actions }}`
-          const fs = require("fs");
-
-          const fileName = 'actions-data.json'
-          fs.writeFileSync(fileName, actions, function(err) {
-            if(err) {
-              return console.log("error")
-            }
-          })          
-          
+        
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v3
       with: 
         name: actions
-        path: actions-data.json
+        path: ${{ steps.load-actions.outputs.actions-file-path }}
    
     - name: Upload json to this repository
       #uses: LasyIsLazy/github-upload-action@v0.1.0
