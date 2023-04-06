@@ -10,10 +10,15 @@ on:
 
   # run manually
   workflow_dispatch:
+  
+permissions:
+  contents: read
 
 jobs:
   get-action-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to write back the repository
 
     steps:
     - uses: devops-actions/load-available-actions@v2.1.3
@@ -33,8 +38,8 @@ jobs:
       #uses: LasyIsLazy/github-upload-action@v0.1.0
       uses: rajbos-actions/github-upload-action@v0.2.0
       with:
-        access-token: ${{ secrets.PAT }}
-        file-path: actions-data.json
+        access-token: ${{ secrets.GITHUB_TOKEN }}
+        file-path: ${{ steps.load-actions.outputs.actions-file-path }}
         owner: ${{ github.repository_owner }}
         repo: actions-marketplace # ${{ github.repository }} doesn't work with this action :-(, it'll fail over the slash and owner name
         #remote-dir:  // upload in the root
