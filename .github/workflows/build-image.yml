@@ -3,6 +3,7 @@ on:
     branches:
       - main
       - used-actions
+      - fix-module
 
   workflow_dispatch:
 
