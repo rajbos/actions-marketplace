@@ -17,5 +17,6 @@ RUN apt-get update \
     && apt-get install git -y 
 
 # install the module we need
-RUN ["pwsh", "-Command", "install-module -name powershell-yaml -Force -Repository PSGallery; ls opt/microsoft/powershell"]
+RUN ["pwsh", "-Command", "install-module -name powershell-yaml -Force -Repository PSGallery; ls opt/microsoft/powershell;"]
+RUN ["pwsh", "-Command", "ls opt/microsoft/powershell;"]
 SHELL ["pwsh"]
