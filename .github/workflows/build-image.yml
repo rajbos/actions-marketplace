@@ -15,6 +15,8 @@ env:
 jobs:
   build-and-push-container:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
     - uses: actions/checkout@v3
     - name: Build
@@ -24,7 +26,7 @@ jobs:
         # docker build -t ${NAME}:${TAG} -f Dockerfile --build-arg http_proxy="$http_proxy" --build-arg https_proxy="$http_proxy" --build-arg no_proxy="$no_proxy" .
 
     - name: Login CR
-      run: echo "${{ secrets.CONTAINER_REGISTRY_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY}} -u ${{ secrets.CONTAINER_REGISTRY_USERNAME }} --password-stdin
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY}} -u ${{ secrets.CONTAINER_REGISTRY_USERNAME }} --password-stdin
 
     - name: Push image to CR
       run: docker push ${NAME}:${TAG}
