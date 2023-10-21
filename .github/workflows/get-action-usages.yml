@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/rajbos/actions-marketplace/powershell:7 # ${{ env.container_registry }} doesn't work :-
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Test PowerShell Modules forder in root folder
       if: always()
