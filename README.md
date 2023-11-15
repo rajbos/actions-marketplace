@@ -1,5 +1,5 @@
 # Actions Marketplace
-Goal: Host a GitHub Actions Marketplace in your own organization.
+Goal: Host a GitHub Actions Marketplace in your own organization, more explanation in the blog post [here](https://devopsjournal.io/blog/2021/10/14/GitHub-Actions-Internal-Marketplace).
 
 This repo will check all repositories in the organization it sits in and write a actions-data.json to a new branch `gh-pages`.
 
