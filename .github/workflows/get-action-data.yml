@@ -36,7 +36,7 @@ jobs:
         echo "filename=$filename" >> $GITHUB_OUTPUT
         
     - name: Upload result file as artefact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with: 
         name: actions
         path: ${{ steps.filename.outputs.filename }}
