@@ -9,7 +9,6 @@ on:
       - 'script.js'
       - 'style.css'
       - '_includes/**'
-      - '_config.yml'
 
   # Allow manual trigger
   workflow_dispatch:
@@ -39,7 +38,7 @@ jobs:
           cp index.html gh-pages-branch/
           cp script.js gh-pages-branch/
           cp style.css gh-pages-branch/
-          cp _config.yml gh-pages-branch/
+          cp .nojekyll gh-pages-branch/
 
           # Copy _includes directory if it exists
           if [ -d "_includes" ]; then

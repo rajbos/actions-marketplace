@@ -1,1 +1,2 @@
-theme: jekyll-theme-cayman
+# Theme removed to prevent CSS conflicts with custom styles
+# The index.html is a standalone page with its own styling
