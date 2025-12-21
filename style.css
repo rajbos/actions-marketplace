@@ -20,15 +20,16 @@ body {
     background: white;
     border: 1px solid #d0d7de;
     border-radius: 12px;
-    min-height: 280px;
+    height: 320px;
     margin: 16px;
     padding: 24px;
     width: 380px;
-    float: left;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .panel:hover {
@@ -72,6 +73,10 @@ body {
     padding-top: 12px;
     color: #57606a;
     line-height: 1.6;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
 .line {
@@ -218,6 +223,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 #main {
     clear: both;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
 }
 
 .main-content {
@@ -248,14 +257,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 .actionInfo {
-    float: left;  
     margin-right: 32px;
     font-size: 1.1rem;
     color: #24292f;
 }
 
 .search {
-    float: left;
     position: relative;
 }
 
@@ -288,6 +295,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     border: 1px solid #d0d7de;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 #lastUpdatePanel {
