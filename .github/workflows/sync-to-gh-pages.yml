@@ -10,13 +10,13 @@ on:
       - 'style.css'
       - '_includes/**'
       - '_config.yml'
+      - '.nojekyll'
 
   # Allow manual trigger
   workflow_dispatch:
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
   sync-files:
@@ -41,6 +41,7 @@ jobs:
           cp script.js gh-pages-branch/
           cp style.css gh-pages-branch/
           cp _config.yml gh-pages-branch/
+          cp .nojekyll gh-pages-branch/
 
           # Copy _includes directory if it exists
           if [ -d "_includes" ]; then
@@ -48,7 +49,6 @@ jobs:
           fi
 
       - name: Commit and push changes to gh-pages
-        id: commit
         run: |
           cd gh-pages-branch
           git config user.name "github-actions[bot]"
@@ -59,15 +59,6 @@ jobs:
             git add .
             git commit -m "Sync static files from main branch"
             git push
-            echo "changes=true" >> $GITHUB_OUTPUT
           else
             echo "No changes to commit"
-            echo "changes=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Trigger Jekyll deployment
-        if: steps.commit.outputs.changes == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh workflow run "jekyll-gh-pages.yml" --repo ${{ github.repository }}

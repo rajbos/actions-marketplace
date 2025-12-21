@@ -21,17 +21,14 @@ The get-action-data will iterate all repositories in the same organization (or u
 Enable GitHub Pages on the `Settings` tab of your fork. Tell it to look for the pages in the `gh-pages` branch, since that is where the datafile will be located it needs to display the actions.
 
 ## GitHub Pages Deployment Flow
-The repository uses a two-step process to deploy to GitHub Pages:
+The repository uses a simple deployment process to GitHub Pages:
 
-1. **Static Files Sync** (`sync-to-gh-pages.yml`): When HTML, JavaScript, CSS, or Jekyll configuration files are updated in the `main` branch, this workflow automatically copies them to the `gh-pages` branch.
-   - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, `_includes/`, or `_config.yml`
+**Static Files Sync** (`sync-to-gh-pages.yml`): When HTML, JavaScript, CSS, or configuration files are updated in the `main` branch, this workflow automatically copies them to the `gh-pages` branch. GitHub Pages then serves these files directly without any build step.
+   - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, `_includes/`, `_config.yml`, or `.nojekyll`
    - Can also be triggered manually via workflow dispatch
+   - The `.nojekyll` file ensures GitHub Pages serves the static files directly without Jekyll processing
 
-2. **GitHub Pages Deployment** (`jekyll-gh-pages.yml`): When the `gh-pages` branch is updated (either by the static files sync or by the action data workflow), this workflow builds and deploys the site using Jekyll.
-   - Triggers on: pushes to `gh-pages` branch
-   - Uses GitHub's official Jekyll GitHub Pages action to build and deploy the site
-
-This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are automatically reflected on the GitHub Pages site.
+This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are immediately reflected on the GitHub Pages site.
 
 
 ## Security 
