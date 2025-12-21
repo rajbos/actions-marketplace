@@ -28,6 +28,7 @@ The repository uses a simple deployment process to GitHub Pages:
    - Can also be triggered manually via workflow dispatch
    - The `.nojekyll` file disables Jekyll processing, which prevents Jekyll themes from overriding custom CSS and eliminates build delays
    - **Important**: The `.nojekyll` file must exist in the main branch so it can be copied to gh-pages during sync. If it's accidentally removed from main, the workflow will fail to alert developers, and Jekyll processing may be re-enabled on the deployed site.
+   - **Cache Busting**: The workflow automatically updates version parameters (`?v=timestamp`) on CSS and JS file references in `index.html` during each sync. This forces browsers to reload updated files and prevents caching issues. The `index.html` in the main branch includes a placeholder version that gets replaced with a Unix timestamp during sync.
 
 This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are immediately reflected on the GitHub Pages site without waiting for a Jekyll build.
 
