@@ -38,7 +38,11 @@ jobs:
           cp index.html gh-pages-branch/
           cp script.js gh-pages-branch/
           cp style.css gh-pages-branch/
-          cp .nojekyll gh-pages-branch/
+          
+          # Copy .nojekyll if it exists
+          if [ -f ".nojekyll" ]; then
+            cp .nojekyll gh-pages-branch/
+          fi
 
           # Copy _includes directory if it exists
           if [ -d "_includes" ]; then
