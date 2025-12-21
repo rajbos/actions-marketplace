@@ -10,7 +10,6 @@ on:
       - 'style.css'
       - '_includes/**'
       - '_config.yml'
-      - '.nojekyll'
 
   # Allow manual trigger
   workflow_dispatch:

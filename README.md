@@ -24,11 +24,11 @@ Enable GitHub Pages on the `Settings` tab of your fork. Tell it to look for the 
 The repository uses a simple deployment process to GitHub Pages:
 
 **Static Files Sync** (`sync-to-gh-pages.yml`): When HTML, JavaScript, CSS, or configuration files are updated in the `main` branch, this workflow automatically copies them to the `gh-pages` branch. GitHub Pages then serves these files directly without any build step.
-   - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, `_includes/`, `_config.yml`, or `.nojekyll`
+   - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, `_includes/`, or `_config.yml`
    - Can also be triggered manually via workflow dispatch
-   - The `.nojekyll` file ensures GitHub Pages serves the static files directly without Jekyll processing
+   - The `.nojekyll` file disables Jekyll processing, which prevents Jekyll themes from overriding custom CSS and eliminates build delays
 
-This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are immediately reflected on the GitHub Pages site.
+This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are immediately reflected on the GitHub Pages site without waiting for a Jekyll build.
 
 
 ## Security 
