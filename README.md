@@ -27,7 +27,7 @@ The repository uses a simple deployment process to GitHub Pages:
    - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, or `_includes/`
    - Can also be triggered manually via workflow dispatch
    - The `.nojekyll` file disables Jekyll processing, which prevents Jekyll themes from overriding custom CSS and eliminates build delays
-   - **Important**: The `.nojekyll` file in the main branch is essential for proper deployment. If it's accidentally removed, the site may not display correctly as Jekyll processing will be re-enabled.
+   - **Important**: The `.nojekyll` file must exist in the main branch so it can be copied to gh-pages during sync. If it's accidentally removed from main, the workflow will fail to alert developers, and Jekyll processing may be re-enabled on the deployed site.
 
 This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are immediately reflected on the GitHub Pages site without waiting for a Jekyll build.
 
