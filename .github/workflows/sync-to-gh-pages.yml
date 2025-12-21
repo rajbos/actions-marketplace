@@ -1,0 +1,62 @@
+name: Sync static files to gh-pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'script.js'
+      - 'style.css'
+      - '_includes/**'
+      - '_config.yml'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+          path: gh-pages-branch
+
+      - name: Copy static files to gh-pages
+        run: |
+          # Copy static files from main to gh-pages
+          cp index.html gh-pages-branch/
+          cp script.js gh-pages-branch/
+          cp style.css gh-pages-branch/
+          cp _config.yml gh-pages-branch/
+
+          # Copy _includes directory if it exists
+          if [ -d "_includes" ]; then
+            cp -r _includes gh-pages-branch/
+          fi
+
+      - name: Commit and push changes to gh-pages
+        run: |
+          cd gh-pages-branch
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if there are any changes
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "Sync static files from main branch"
+            git push
+          else
+            echo "No changes to commit"
+          fi

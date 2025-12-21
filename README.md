@@ -20,6 +20,19 @@ The get-action-data will iterate all repositories in the same organization (or u
 # GitHub Pages
 Enable GitHub Pages on the `Settings` tab of your fork. Tell it to look for the pages in the `gh-pages` branch, since that is where the datafile will be located it needs to display the actions.
 
+## GitHub Pages Deployment Flow
+The repository uses a two-step process to deploy to GitHub Pages:
+
+1. **Static Files Sync** (`sync-to-gh-pages.yml`): When HTML, JavaScript, CSS, or Jekyll configuration files are updated in the `main` branch, this workflow automatically copies them to the `gh-pages` branch.
+   - Triggers on: pushes to `main` branch that modify `index.html`, `script.js`, `style.css`, `_includes/`, or `_config.yml`
+   - Can also be triggered manually via workflow dispatch
+
+2. **GitHub Pages Deployment** (`jekyll-gh-pages.yml`): When the `gh-pages` branch is updated (either by the static files sync or by the action data workflow), this workflow builds and deploys the site using Jekyll.
+   - Triggers on: pushes to `gh-pages` branch
+   - Uses GitHub's official Jekyll GitHub Pages action to build and deploy the site
+
+This ensures that any updates to the marketplace website (HTML/JS/CSS) or action data (JSON) are automatically reflected on the GitHub Pages site.
+
 
 ## Security 
 When you fork this repository, you'll need to verify and then trust the automated workflow, before it will start to run. We use the default [GITHUB_TOKEN](https://docs.github.com/en/actions/reference/authentication-in-a-workflow) secret to write the data file back to the forked repository. We post the data file with our default user 'Marketplace Updater' that will show up in your git commit history. If you want to override these values, create these secrets and provide values:
