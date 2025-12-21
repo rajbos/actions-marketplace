@@ -54,7 +54,7 @@ jobs:
 
           # Check if there are any changes
           if [[ -n $(git status -s) ]]; then
-            git add index.html script.js style.css _config.yml _includes/
+            git add .
             git commit -m "Sync static files from main branch"
             git push
           else
