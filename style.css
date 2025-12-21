@@ -9,118 +9,205 @@ div {
 body {
     padding: 0;
     margin: 0;
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.5;
-    color: #606c71;
+    line-height: 1.6;
+    color: #24292f;
+    background-color: #f6f8fa;
 }
 
 .panel {
-    border: solid 1px #155799;
-    min-height: 285px;
-    margin: 5px 5px 5px 5px;
-    padding: 5px 5px 5px 5px;
-    width: 350px;
-    float: left;
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    height: 320px;
+    margin: 16px;
+    padding: 24px;
+    width: 380px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+    border-color: #0969da;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0969da, #1f883d);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.panel:hover::before {
+    opacity: 1;
 }
 
 #actionCount {
     font-weight: 600;
+    color: #0969da;
+    font-size: 1.1em;
 }
 
 .name {
     font-weight: 600;
-    padding-right: 5px;
+    padding-right: 8px;
+    color: #57606a;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .description {
-    padding-top: 5px;
+    padding-top: 12px;
+    color: #57606a;
+    line-height: 1.6;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
-.line{
-    margin-bottom: 4px;
+.line {
+    margin-bottom: 12px;
+}
+
+.line:first-child .value a {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0969da;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.line:first-child .value a:hover {
+    color: #0550ae;
+    text-decoration: underline;
+}
+
+.line:nth-child(2) .value {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #24292f;
+}
+
+.line:nth-child(3) .value {
+    color: #57606a;
+    font-size: 0.9rem;
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em){
 .page-header {
-    padding: 3rem 4rem;
+    padding: 4rem 4rem;
 }}
 .page-header {
     color: #fff;
     text-align: center;
-    background-color: #159957;
-    background-image: linear-gradient(
-120deg
-, #155799, #159957);
+    background: linear-gradient(135deg, #0969da 0%, #1f883d 100%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 5rem 2rem;
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em){
 .project-name {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
 }}
 
 .project-name {
     margin-top: 0;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 h1 {
-    font-size: 2em;
+    font-size: 2.5em;
     margin: 0.67em 0;
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em){
 .project-tagline {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
 }}
 .project-tagline {
-    margin-bottom: 2rem;
-    font-weight: normal;
-    opacity: 0.7;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+    opacity: 0.9;
+    font-size: 1.2rem;
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em){
 .btn {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
 }}
 
 .btn {
     display: inline-block;
     margin-bottom: 1rem;
-    color: rgba(255,255,255,0.7);
-    background-color: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.2);
+    color: white;
+    background-color: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.4);
     border-style: solid;
-    border-width: 1px;
-    border-radius: 0.3rem;
-    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.9rem;
+    border-width: 2px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
 }
+
+.btn:hover {
+    background-color: rgba(255,255,255,0.25);
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 a {
-    color: #1e6bb8;
+    color: #0969da;
     text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 @media screen and (min-width: 42em) and (max-width: 64em) {
 .site-footer {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }}
 
 .site-footer {
-    padding-top: 2rem;
-    margin-top: 2rem;
-    border-top: solid 1px #eff0f1;
+    padding-top: 3rem;
+    margin-top: 4rem;
+    border-top: 2px solid #d0d7de;
     clear: both;
+    text-align: center;
 }
 
 .site-footer-owner {
     display: block;
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #24292f;
 }
 
 .site-footer-credits {
-    color: #819198;
+    color: #57606a;
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
@@ -128,12 +215,18 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 .main-content {
-    padding: 2rem 4rem;
-    font-size: 1.1rem;
+    padding: 3rem 4rem;
+    font-size: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 #main {
     clear: both;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
 }
 
 .main-content {
@@ -143,10 +236,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 @media screen and (max-width: 450px) {
 .panel {
     max-width: 100vw;
-    margin: 5px 0 5px 0;
+    margin: 12px 0;
+    width: 100%;
 }
 .main-content {
-    padding: 2rem 2rem;
+    padding: 2rem 1.5rem;
 }
 }
 
@@ -158,32 +252,70 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 @media screen and (max-width: 370px) {
 .main-content {
-    padding: 2rem 0;
+    padding: 1.5rem 0.5rem;
 }
 }
 
 .actionInfo {
-    float: left;  
-    margin-right: 25px;
+    margin-right: 32px;
+    font-size: 1.1rem;
+    color: #24292f;
 }
 
 .search {
-    float: left;                
+    position: relative;
 }
 
 .search input {
-    height: 31px;
+    height: 42px;
+    padding: 8px 16px;
+    border: 2px solid #d0d7de;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 300px;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.search input:focus {
+    outline: none;
+    border-color: #0969da;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+}
+
+.search input::placeholder {
+    color: #8c959f;
 }
 
 .top {
     clear: both;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #d0d7de;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 #lastUpdatePanel {
-    margin-bottom: 5px;
+    margin-bottom: 24px;
+    margin-top: 24px;
     clear: both;
+    padding: 16px 24px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #d0d7de;
+    text-align: center;
+    color: #57606a;
 }
 
 #lastUpdated {
-    margin-left: 5px;
+    margin-left: 8px;
+    font-weight: 600;
+    color: #24292f;
 }
