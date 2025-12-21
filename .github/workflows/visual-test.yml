@@ -1,0 +1,239 @@
+name: Visual Testing
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'style.css'
+      - 'script.js'
+      - '.github/workflows/visual-test.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install --save-dev playwright
+          npx playwright install --with-deps chromium
+          
+      - name: Create test data
+        run: |
+          cat > actions-data.json << 'EOF'
+          {
+            "lastUpdated": "20231201_123456",
+            "actions": [
+              {
+                "owner": "actions",
+                "repo": "checkout",
+                "name": "Checkout",
+                "author": "GitHub",
+                "description": "This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it."
+              },
+              {
+                "owner": "actions",
+                "repo": "setup-node",
+                "name": "Setup Node.js environment",
+                "author": "GitHub",
+                "description": "Set up your GitHub Actions workflow with a specific version of Node.js"
+              },
+              {
+                "owner": "actions",
+                "repo": "setup-python",
+                "name": "Setup Python",
+                "author": "GitHub",
+                "description": "Set up a specific version of Python and add the command-line tools to the PATH"
+              },
+              {
+                "owner": "actions",
+                "repo": "upload-artifact",
+                "name": "Upload Artifact",
+                "author": "GitHub",
+                "description": "Upload artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete"
+              },
+              {
+                "owner": "rajbos",
+                "repo": "test-action",
+                "name": "Test Action",
+                "author": "Rob Bos",
+                "description": "A test action for demonstration purposes with a longer description that wraps to multiple lines and shows how the panel handles extended content."
+              }
+            ]
+          }
+          EOF
+          
+      - name: Create Playwright test script
+        run: |
+          cat > visual-test.js << 'EOF'
+          const { chromium } = require('playwright');
+          const path = require('path');
+          
+          (async () => {
+            console.log('Starting visual test...');
+            const browser = await chromium.launch();
+            const context = await browser.newContext();
+            const page = await context.newPage();
+            
+            // Start local server
+            const handler = require('http').createServer((req, res) => {
+              const fs = require('fs');
+              let filePath = '.' + req.url;
+              if (filePath === './') filePath = './index.html';
+              
+              const extname = path.extname(filePath);
+              let contentType = 'text/html';
+              
+              if (extname === '.js') contentType = 'text/javascript';
+              else if (extname === '.css') contentType = 'text/css';
+              else if (extname === '.json') contentType = 'application/json';
+              
+              fs.readFile(filePath, (err, content) => {
+                if (err) {
+                  res.writeHead(404);
+                  res.end('Not found');
+                } else {
+                  res.writeHead(200, { 'Content-Type': contentType });
+                  res.end(content, 'utf-8');
+                }
+              });
+            });
+            
+            const server = handler.listen(8000);
+            console.log('Server started on port 8000');
+            
+            // Wait for server to be ready
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Navigate to the page
+            await page.goto('http://localhost:8000/index.html');
+            
+            // Wait for content to load
+            await page.waitForTimeout(2000);
+            
+            // Create screenshots directory
+            const fs = require('fs');
+            if (!fs.existsSync('screenshots')) {
+              fs.mkdirSync('screenshots');
+            }
+            
+            // Take desktop screenshot
+            await page.setViewportSize({ width: 1920, height: 1080 });
+            await page.screenshot({ 
+              path: 'screenshots/desktop-view.png', 
+              fullPage: true 
+            });
+            console.log('Desktop screenshot saved');
+            
+            // Take mobile screenshot
+            await page.setViewportSize({ width: 375, height: 667 });
+            await page.screenshot({ 
+              path: 'screenshots/mobile-view.png', 
+              fullPage: true 
+            });
+            console.log('Mobile screenshot saved');
+            
+            // Take tablet screenshot
+            await page.setViewportSize({ width: 768, height: 1024 });
+            await page.screenshot({ 
+              path: 'screenshots/tablet-view.png', 
+              fullPage: true 
+            });
+            console.log('Tablet screenshot saved');
+            
+            // Test search functionality
+            await page.setViewportSize({ width: 1920, height: 1080 });
+            await page.fill('input[type="text"]', 'node');
+            await page.waitForTimeout(500);
+            await page.screenshot({ 
+              path: 'screenshots/search-filtered.png', 
+              fullPage: true 
+            });
+            console.log('Search screenshot saved');
+            
+            // Test hover effect
+            await page.fill('input[type="text"]', '');
+            await page.waitForTimeout(500);
+            const firstPanel = await page.locator('.panel').first();
+            await firstPanel.hover();
+            await page.screenshot({ 
+              path: 'screenshots/hover-effect.png', 
+              fullPage: true 
+            });
+            console.log('Hover screenshot saved');
+            
+            server.close();
+            await browser.close();
+            console.log('All screenshots captured successfully!');
+          })().catch(err => {
+            console.error('Error during visual test:', err);
+            process.exit(1);
+          });
+          EOF
+          
+      - name: Run visual tests
+        run: node visual-test.js
+        
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-screenshots
+          path: screenshots/
+          retention-days: 30
+          
+      - name: Comment on PR with screenshots
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Read all screenshots
+            const screenshotsDir = 'screenshots';
+            const files = fs.readdirSync(screenshotsDir);
+            
+            // Upload screenshots as PR comment attachments would require a different approach
+            // Instead, we'll create a comment with artifact links
+            const comment = `## 📸 Visual Test Results
+            
+            The visual tests have completed successfully! Screenshots of the UI changes are available in the workflow artifacts.
+            
+            ### Screenshots Generated:
+            - ✅ Desktop view (1920x1080)
+            - ✅ Mobile view (375x667)
+            - ✅ Tablet view (768x1024)
+            - ✅ Search functionality
+            - ✅ Hover effects
+            
+            ### How to View:
+            1. Click on the "Actions" tab above
+            2. Find this workflow run: ${context.workflow}
+            3. Download the "visual-test-screenshots" artifact
+            4. Extract and view the PNG files
+            
+            ### Files Tested:
+            - \`index.html\` - Main marketplace page structure
+            - \`style.css\` - Modern card-based styling
+            - \`script.js\` - Search and filtering functionality
+            
+            **Workflow Run:** [View Details](${context.payload.repository.html_url}/actions/runs/${context.runId})`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });

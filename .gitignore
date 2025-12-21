@@ -1,3 +1,12 @@
 actions.json
 summarized-actions.json
 used-actions.json
+
+# Node modules and dependencies
+node_modules/
+package-lock.json
+
+# Test artifacts
+screenshots/
+visual-test.js
+actions-data.json
