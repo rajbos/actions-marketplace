@@ -47,8 +47,8 @@ jobs:
 
           # Update cache-busting version parameter with current timestamp
           TIMESTAMP=$(date +%s)
-          sed -i "s/\(style\.css\?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
-          sed -i "s/\(script\.js\?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
+          sed -i "s/\(style\.css?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
+          sed -i "s/\(script\.js?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
 
       - name: Commit and push changes to gh-pages
         run: |
