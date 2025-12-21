@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   sync-files:
@@ -47,6 +48,7 @@ jobs:
           fi
 
       - name: Commit and push changes to gh-pages
+        id: commit
         run: |
           cd gh-pages-branch
           git config user.name "github-actions[bot]"
@@ -57,6 +59,15 @@ jobs:
             git add .
             git commit -m "Sync static files from main branch"
             git push
+            echo "changes=true" >> $GITHUB_OUTPUT
           else
             echo "No changes to commit"
+            echo "changes=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Trigger Jekyll deployment
+        if: steps.commit.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run "jekyll-gh-pages.yml" --repo ${{ github.repository }}
