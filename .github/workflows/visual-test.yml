@@ -167,6 +167,8 @@ jobs:
             // Test hover effect
             await page.fill('input[type="text"]', '');
             await page.waitForTimeout(500);
+            // Wait for .panel elements to be present before hovering
+            await page.waitForSelector('.panel', { timeout: 10000 });
             const firstPanel = await page.locator('.panel').first();
             await firstPanel.hover();
             await page.screenshot({ 
