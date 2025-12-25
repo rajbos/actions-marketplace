@@ -121,8 +121,10 @@ jobs:
             // Navigate to the page
             await page.goto('http://localhost:8000/index.html');
             
-            // Wait for content to load
-            await page.waitForTimeout(2000);
+            // Wait for content to load and panels to be created
+            console.log('Waiting for panels to load...');
+            await page.waitForSelector('.panel', { state: 'visible', timeout: 15000 });
+            console.log('Panels loaded successfully');
             
             // Create screenshots directory
             const fs = require('fs');
@@ -166,7 +168,9 @@ jobs:
             
             // Test hover effect
             await page.fill('input[type="text"]', '');
+            // Wait for filter to complete and panels to be visible again
             await page.waitForTimeout(500);
+            await page.waitForSelector('.panel', { state: 'visible', timeout: 10000 });
             const firstPanel = await page.locator('.panel').first();
             await firstPanel.hover();
             await page.screenshot({ 
