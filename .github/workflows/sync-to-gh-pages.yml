@@ -50,6 +50,17 @@ jobs:
           sed -i "s/\(style\.css?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
           sed -i "s/\(script\.js?v=\)[^\"]*/\1${TIMESTAMP}/" gh-pages-branch/index.html
 
+          # Inject deployment metadata
+          DEPLOY_DATE=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          DEPLOY_BRANCH="${GITHUB_REF#refs/heads/}"
+          DEPLOY_COMMIT="${GITHUB_SHA:0:7}"
+
+          # Add deployment info as HTML comment before </html> using perl
+          perl -i -pe 's#</html>#<!-- Deployed from branch: '"$DEPLOY_BRANCH"', commit: '"$DEPLOY_COMMIT"', date: '"$DEPLOY_DATE"' --></html>#' gh-pages-branch/index.html
+
+          # Inject deployment info into the deployment footer placeholder
+          sed -i "s|.*DEPLOYMENT_INFO_PLACEHOLDER.*|                Deployed from <strong>${DEPLOY_BRANCH}</strong> branch on <strong>${DEPLOY_DATE}</strong>|" gh-pages-branch/index.html
+
       - name: Commit and push changes to gh-pages
         run: |
           cd gh-pages-branch
