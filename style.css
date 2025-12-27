@@ -335,3 +335,27 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     color: #24292f;
     font-weight: 600;
 }
+
+.visibility-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+.visibility-badge-public {
+    background-color: #dafbe1;
+    color: #1a7f37;
+    border: 1px solid #1f883d;
+}
+
+.visibility-badge-private {
+    background-color: #fff8c5;
+    color: #7d4e00;
+    border: 1px solid #bf8700;
+}

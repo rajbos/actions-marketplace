@@ -27,7 +27,13 @@ function addActionPanel(mainElement, action) {
     panel.setAttribute('data-author', (action.author || '').toLowerCase());
     panel.setAttribute('data-description', action.description.toLowerCase());
     
-    panel.innerHTML = `<div class="line"><span class="name">Repository:</span><span class="value"><a href="https://github.com/${action.owner}/${action.repo}">${action.repo}</a></span></div>`;
+    // Determine visibility status
+    var isPrivate = action.private === true;
+    var visibilityClass = isPrivate ? 'visibility-badge-private' : 'visibility-badge-public';
+    var visibilityText = isPrivate ? 'Private' : 'Public';
+    var visibilityIcon = isPrivate ? '🔒' : '🌐';
+    
+    panel.innerHTML = `<div class="line"><span class="name">Repository:</span><span class="value"><a href="https://github.com/${action.owner}/${action.repo}">${action.repo}</a><span class="visibility-badge ${visibilityClass}">${visibilityIcon} ${visibilityText}</span></span></div>`;
     panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.name+'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.author || "Not set") +'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Description:</span><div class="value description">'+action.description+'</div></div>';
