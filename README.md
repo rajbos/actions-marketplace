@@ -107,7 +107,7 @@ This workflow actually publishes the site to GitHub Pages:
 
 **Purpose:** Deploy the `gh-pages` branch content to the live GitHub Pages site
 - **Triggers:** 
-  - Automatically when changes are pushed to the `gh-pages` branch
+  - Automatically when the `sync-to-gh-pages.yml` workflow completes successfully (using `workflow_run` trigger)
   - Manually via workflow dispatch
 - **What it does:**
   - Checks out the `gh-pages` branch
@@ -115,6 +115,7 @@ This workflow actually publishes the site to GitHub Pages:
   - Uploads the built site as a Pages artifact
   - Deploys to the live GitHub Pages environment
 - **Permissions:** Requires `pages: write` and `id-token: write` permissions for deployment
+- **Note:** Uses `workflow_run` trigger instead of `push` to avoid GitHub's limitation where workflows triggered by `GITHUB_TOKEN` don't trigger other workflows
 
 ### The Complete Flow
 
@@ -140,7 +141,7 @@ The action data (JSON file) is updated separately:
   - Scans all repositories in the organization for `action.yml` files
   - Generates `actions-data.json` with action metadata
   - Uploads the JSON directly to the `gh-pages` branch
-  - This triggers `jekyll-gh-pages.yml` to redeploy with updated data
+  - This triggers the `sync-to-gh-pages.yml` workflow, which then triggers `jekyll-gh-pages.yml` to redeploy with updated data
 
 ### Key Files
 

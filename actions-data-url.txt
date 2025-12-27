@@ -1,1 +1,1 @@
-/actions-data.json
+actions-data.json
