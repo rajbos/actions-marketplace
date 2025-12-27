@@ -53,7 +53,7 @@ jobs:
         Write-Host "Written [$($content.Length)] characters to the output file [$fileName]"
     
     - name: upload result file as artefact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with: 
         name: summarized-actions
         path: summarized-actions.json
