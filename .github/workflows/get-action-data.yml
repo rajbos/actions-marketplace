@@ -37,8 +37,8 @@ jobs:
     
     - name: Show action count in summary
       run: |
-        actions_count=$(jq '.actions | length' ${{ steps.filename.outputs.filename }})
-        workflows_count=$(jq '.workflows | length' ${{ steps.filename.outputs.filename }})
+        actions_count=$(jq '.actions // [] | length' ${{ steps.filename.outputs.filename }})
+        workflows_count=$(jq '.workflows // [] | length' ${{ steps.filename.outputs.filename }})
         total=$((actions_count + workflows_count))
         echo "## Action Data Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
