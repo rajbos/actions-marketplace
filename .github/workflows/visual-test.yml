@@ -98,8 +98,7 @@ jobs:
               console.log('HTTP REQUEST:', req.url);
               const fs = require('fs');
               // Strip query parameters from URL
-              const url = require('url');
-              const parsedUrl = url.parse(req.url);
+              const parsedUrl = new URL(req.url, 'http://localhost');
               let filePath = '.' + parsedUrl.pathname;
               if (filePath === './') filePath = './index.html';
               
