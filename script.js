@@ -72,7 +72,7 @@ function setLastUpdated(lastUpdated) {
     var splittedDate = date.split(/(?=(?:..)*$)/);
     var splittedTime = time.split(/(?=(?:..)*$)/);
 
-    var date = new Date(splittedDate[0]+splittedDate[1],splittedDate[2],splittedDate[3], splittedTime[0], splittedTime[1]);
+    var date = new Date(splittedDate[0]+splittedDate[1],splittedDate[2]-1,splittedDate[3], splittedTime[0], splittedTime[1]);
 
     document.getElementById('lastUpdated').innerHTML = date.toLocaleString();
 }
