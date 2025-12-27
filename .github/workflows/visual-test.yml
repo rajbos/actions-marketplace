@@ -75,6 +75,7 @@ jobs:
             ]
           }
           EOF
+          printf "actions-data.json" > actions-data-url.txt
           
       - name: Create Playwright test script
         run: |
@@ -88,10 +89,17 @@ jobs:
             const context = await browser.newContext();
             const page = await context.newPage();
             
+            // Listen to browser console
+            page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+            page.on('pageerror', err => console.log('PAGE ERROR:', err));
+            
             // Start local server
             const handler = require('http').createServer((req, res) => {
+              console.log('HTTP REQUEST:', req.url);
               const fs = require('fs');
-              let filePath = '.' + req.url;
+              // Strip query parameters from URL
+              const parsedUrl = new URL(req.url, 'http://localhost');
+              let filePath = '.' + parsedUrl.pathname;
               if (filePath === './') filePath = './index.html';
               
               const extname = path.extname(filePath);
@@ -100,12 +108,15 @@ jobs:
               if (extname === '.js') contentType = 'text/javascript';
               else if (extname === '.css') contentType = 'text/css';
               else if (extname === '.json') contentType = 'application/json';
+              else if (extname === '.txt') contentType = 'text/plain';
               
               fs.readFile(filePath, (err, content) => {
                 if (err) {
+                  console.log('FILE NOT FOUND:', filePath);
                   res.writeHead(404);
                   res.end('Not found');
                 } else {
+                  console.log('FILE SERVED:', filePath);
                   res.writeHead(200, { 'Content-Type': contentType });
                   res.end(content, 'utf-8');
                 }
@@ -120,6 +131,19 @@ jobs:
             
             // Navigate to the page
             await page.goto('http://localhost:8000/index.html');
+            
+            // Wait a bit for the page to initialize
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Check if panels exist yet
+            const panelCount = await page.locator('.panel').count();
+            console.log('Panel count after 2 seconds:', panelCount);
+            
+            // Get page content for debugging
+            if (panelCount === 0) {
+              const mainContent = await page.locator('#main').innerHTML();
+              console.log('Main element content:', mainContent);
+            }
             
             // Wait for content to load and panels to be created
             console.log('Waiting for panels to load...');
@@ -187,6 +211,15 @@ jobs:
             process.exit(1);
           });
           EOF
+          
+      - name: Verify test data files
+        run: |
+          echo "Checking test data files..."
+          ls -la actions-data*
+          echo "Content of actions-data-url.txt:"
+          cat actions-data-url.txt
+          echo "Sample of actions-data.json:"
+          head -20 actions-data.json
           
       - name: Run visual tests
         run: node visual-test.js
