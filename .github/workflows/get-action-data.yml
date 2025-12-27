@@ -34,6 +34,17 @@ jobs:
         filename="actions-data.json"
         mv ${{ steps.load-actions.outputs.actions-file-path }} $filename
         echo "filename=$filename" >> $GITHUB_OUTPUT
+    
+    - name: Show action count in summary
+      run: |
+        actions_count=$(jq '.actions // [] | length' ${{ steps.filename.outputs.filename }})
+        workflows_count=$(jq '.workflows // [] | length' ${{ steps.filename.outputs.filename }})
+        total=$((actions_count + workflows_count))
+        echo "## Action Data Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Actions found:** $actions_count" >> $GITHUB_STEP_SUMMARY
+        echo "- **Reusable workflows found:** $workflows_count" >> $GITHUB_STEP_SUMMARY
+        echo "- **Total:** $total" >> $GITHUB_STEP_SUMMARY
         
     - name: Upload result file as artefact
       uses: actions/upload-artifact@v6
