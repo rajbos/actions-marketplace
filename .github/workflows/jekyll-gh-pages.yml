@@ -2,8 +2,11 @@
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
+  # Runs when the sync-to-gh-pages workflow completes
+  workflow_run:
+    workflows: ["Sync static files to gh-pages"]
+    types:
+      - completed
     branches:
       - gh-pages
 
@@ -26,9 +29,13 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    # Only run if the workflow_run was successful or if manually triggered
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: gh-pages
         
       - name: Setup Pages
         uses: actions/configure-pages@v5
