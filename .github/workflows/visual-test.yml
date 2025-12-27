@@ -75,6 +75,7 @@ jobs:
             ]
           }
           EOF
+          echo "actions-data.json" > actions-data-url.txt
           
       - name: Create Playwright test script
         run: |
