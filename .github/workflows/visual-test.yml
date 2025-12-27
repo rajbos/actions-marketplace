@@ -97,7 +97,10 @@ jobs:
             const handler = require('http').createServer((req, res) => {
               console.log('HTTP REQUEST:', req.url);
               const fs = require('fs');
-              let filePath = '.' + req.url;
+              // Strip query parameters from URL
+              const url = require('url');
+              const parsedUrl = url.parse(req.url);
+              let filePath = '.' + parsedUrl.pathname;
               if (filePath === './') filePath = './index.html';
               
               const extname = path.extname(filePath);
