@@ -28,6 +28,87 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function decodeBase64(base64String) {
+    try {
+        // Proper UTF-8 decoding for base64 strings
+        var binary = atob(base64String);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return new TextDecoder('utf-8').decode(bytes);
+    } catch (e) {
+        console.error('Failed to decode base64:', e);
+        return null;
+    }
+}
+
+function renderMarkdown(markdown) {
+    if (!markdown) return '';
+    
+    // Basic markdown to HTML conversion with proper escaping
+    var html = markdown;
+    
+    // Headers (escape the content)
+    html = html.replace(/^### (.*$)/gim, function(match, p1) {
+        return '<h3>' + escapeHtml(p1) + '</h3>';
+    });
+    html = html.replace(/^## (.*$)/gim, function(match, p1) {
+        return '<h2>' + escapeHtml(p1) + '</h2>';
+    });
+    html = html.replace(/^# (.*$)/gim, function(match, p1) {
+        return '<h1>' + escapeHtml(p1) + '</h1>';
+    });
+    
+    // Bold (escape the content)
+    html = html.replace(/\*\*([^*]+)\*\*/gim, function(match, p1) {
+        return '<strong>' + escapeHtml(p1) + '</strong>';
+    });
+    html = html.replace(/__([^_]+)__/gim, function(match, p1) {
+        return '<strong>' + escapeHtml(p1) + '</strong>';
+    });
+    
+    // Italic (escape the content)
+    html = html.replace(/\*([^*]+)\*/gim, function(match, p1) {
+        return '<em>' + escapeHtml(p1) + '</em>';
+    });
+    html = html.replace(/_([^_]+)_/gim, function(match, p1) {
+        return '<em>' + escapeHtml(p1) + '</em>';
+    });
+    
+    // Links (escape both text and URL, validate URL)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, function(match, text, url) {
+        var escapedText = escapeHtml(text);
+        var escapedUrl = escapeHtml(url);
+        // Basic URL validation - only allow http, https, and relative URLs
+        if (escapedUrl.match(/^(https?:\/\/|\/|#)/)) {
+            return '<a href="' + escapedUrl + '" target="_blank">' + escapedText + '</a>';
+        }
+        return escapedText; // If URL doesn't match, just return the text
+    });
+    
+    // Code blocks (escape the content)
+    html = html.replace(/```([^`]+)```/gim, function(match, p1) {
+        return '<pre><code>' + escapeHtml(p1) + '</code></pre>';
+    });
+    
+    // Inline code (escape the content)
+    html = html.replace(/`([^`]+)`/gim, function(match, p1) {
+        return '<code>' + escapeHtml(p1) + '</code>';
+    });
+    
+    // Line breaks
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = html.replace(/\n/g, '<br>');
+    
+    // Wrap in paragraph if not already wrapped
+    if (!html.startsWith('<')) {
+        html = '<p>' + html + '</p>';
+    }
+    
+    return html;
+}
+
 function displayActionDetail(action) {
     var detailElement = document.getElementById('actionDetail');
     
@@ -118,6 +199,18 @@ function displayActionDetail(action) {
         html += '<div class="detail-section">';
         html += '<h3>Action File</h3>';
         html += '<p><a href="' + escapeHtml(action.downloadUrl) + '" target="_blank">View action.yml</a></p>';
+        html += '</div>';
+    }
+    
+    if (action.readme) {
+        html += '<div class="detail-section readme-section">';
+        html += '<h3>README</h3>';
+        var decodedReadme = decodeBase64(action.readme);
+        if (decodedReadme) {
+            html += '<div class="readme-content">' + renderMarkdown(decodedReadme) + '</div>';
+        } else {
+            html += '<p class="readme-error">Failed to load README content</p>';
+        }
         html += '</div>';
     }
     

@@ -27,6 +27,7 @@ jobs:
       with: 
         PAT: ${{ secrets.PAT }}
         user: ${{ github.repository_owner }}
+        fetchReadmes: true
         
     - name: Update filename
       id: filename
