@@ -30,14 +30,26 @@ function displayActionDetail(action) {
     }
 
     // Determine visibility status
-    var isPrivate = action.private === true;
+    var visibility = action.visibility || (action.private === true ? 'private' : 'public');
+    var isPrivate = visibility === 'private';
     var visibilityClass = isPrivate ? 'visibility-badge-private' : 'visibility-badge-public';
-    var visibilityText = isPrivate ? 'Private' : 'Public';
+    var visibilityText = visibility.charAt(0).toUpperCase() + visibility.slice(1);
     var visibilityIcon = isPrivate ? '🔒' : '🌐';
     
     var html = '<div class="detail-header">';
     html += '<h2>' + action.name + '</h2>';
     html += '<span class="visibility-badge ' + visibilityClass + '">' + visibilityIcon + ' ' + visibilityText + '</span>';
+    
+    // Add archived badge if applicable
+    if (action.isArchived) {
+        html += '<span class="visibility-badge visibility-badge-archived">📦 Archived</span>';
+    }
+    
+    // Add fork badge if applicable
+    if (action.isFork) {
+        html += '<span class="visibility-badge visibility-badge-fork">🔱 Fork</span>';
+    }
+    
     html += '</div>';
     
     html += '<div class="detail-section">';
@@ -45,6 +57,13 @@ function displayActionDetail(action) {
     var ownerName = action.owner || '';
     html += '<p><a href="https://github.com/' + ownerName + '/' + action.repo + '" target="_blank">' + ownerName + '/' + action.repo + '</a></p>';
     html += '</div>';
+    
+    if (action.path) {
+        html += '<div class="detail-section">';
+        html += '<h3>Path</h3>';
+        html += '<p>' + action.path + '</p>';
+        html += '</div>';
+    }
     
     if (action.author) {
         html += '<div class="detail-section">';
@@ -57,6 +76,20 @@ function displayActionDetail(action) {
     html += '<h3>Description</h3>';
     html += '<p>' + action.description + '</p>';
     html += '</div>';
+    
+    if (action.using) {
+        html += '<div class="detail-section">';
+        html += '<h3>Runtime</h3>';
+        html += '<p>' + action.using.charAt(0).toUpperCase() + action.using.slice(1) + '</p>';
+        html += '</div>';
+    }
+    
+    if (action.forkedfrom && action.forkedfrom !== '') {
+        html += '<div class="detail-section">';
+        html += '<h3>Forked From</h3>';
+        html += '<p><a href="https://github.com/' + action.forkedfrom + '" target="_blank">' + action.forkedfrom + '</a></p>';
+        html += '</div>';
+    }
     
     if (action.downloadUrl) {
         html += '<div class="detail-section">';
