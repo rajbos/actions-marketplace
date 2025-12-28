@@ -42,7 +42,8 @@ function displayActionDetail(action) {
     
     html += '<div class="detail-section">';
     html += '<h3>Repository</h3>';
-    html += '<p><a href="https://github.com/' + (action.owner || '') + '/' + action.repo + '" target="_blank">' + (action.owner || '') + '/' + action.repo + '</a></p>';
+    var ownerName = action.owner || '';
+    html += '<p><a href="https://github.com/' + ownerName + '/' + action.repo + '" target="_blank">' + ownerName + '/' + action.repo + '</a></p>';
     html += '</div>';
     
     if (action.author) {
