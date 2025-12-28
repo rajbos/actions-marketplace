@@ -2,8 +2,8 @@
 
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="style.css?v=1766954929">
-        <script src="script.js?v=1766954929"></script>
+        <link rel="stylesheet" href="style.css?v=1766955361">
+        <script src="script.js?v=1766955361"></script>
 
         <meta property="og:title" content="actions-marketplace" />
         <meta property="og:locale" content="en_US" />
@@ -32,6 +32,42 @@
                 <div class="actionInfo">Found <span id="actionCount"></span> actions</div>
                 <div class="search">Search: <input type="text" placeholder="Search by name, author, or description..."></div>
             </div>
+            <div class="filters">
+                <div class="filter-group">
+                    <span class="filter-label">Filters:</span>
+                    <button class="filter-btn" data-filter="isFork" data-value="false">
+                        Not Forked <span class="count" id="count-not-fork">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="isFork" data-value="true">
+                        Forked <span class="count" id="count-fork">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="isArchived" data-value="false">
+                        Active <span class="count" id="count-active">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="isArchived" data-value="true">
+                        Archived <span class="count" id="count-archived">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="visibility" data-value="public">
+                        Public <span class="count" id="count-public">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="visibility" data-value="private">
+                        Private <span class="count" id="count-private">0</span>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Action Type:</span>
+                    <button class="filter-btn" data-filter="using" data-value="composite">
+                        Composite <span class="count" id="count-composite">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="using" data-value="node">
+                        Node <span class="count" id="count-node">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="using" data-value="docker">
+                        Docker <span class="count" id="count-docker">0</span>
+                    </button>
+                </div>
+                <button class="filter-btn-clear" id="clearFiltersBtn">Clear All Filters</button>
+            </div>
             <div id="main">
 
             </div>
@@ -44,8 +80,8 @@
             </footer>
 
             <div id="deploymentInfo" class="deployment-info">
-                Deployed from <strong>main</strong> branch on <strong>2025-12-28 20:48:49 UTC</strong>
+                Deployed from <strong>main</strong> branch on <strong>2025-12-28 20:56:01 UTC</strong>
             </div>
         </section>
     </body>
-<!-- Deployed from branch: main, commit: baadad5, date: 2025-12-28 20:48:49 UTC --></html>
+<!-- Deployed from branch: main, commit: 2782a4e, date: 2025-12-28 20:56:01 UTC --></html>
