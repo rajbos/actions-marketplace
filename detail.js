@@ -38,10 +38,18 @@ function displayActionDetail(action) {
 
     // Determine visibility status
     var visibility = action.visibility || (action.private === true ? 'private' : 'public');
-    var isPrivate = visibility === 'private';
-    var visibilityClass = isPrivate ? 'visibility-badge-private' : 'visibility-badge-public';
+    var visibilityClass = 'visibility-badge-public';
+    var visibilityIcon = '🌐';
+    
+    if (visibility === 'private') {
+        visibilityClass = 'visibility-badge-private';
+        visibilityIcon = '🔒';
+    } else if (visibility === 'internal') {
+        visibilityClass = 'visibility-badge-internal';
+        visibilityIcon = '🏢';
+    }
+    
     var visibilityText = visibility.charAt(0).toUpperCase() + visibility.slice(1);
-    var visibilityIcon = isPrivate ? '🔒' : '🌐';
     
     var html = '<div class="detail-header">';
     html += '<h2>' + escapeHtml(action.name) + '</h2>';
@@ -85,11 +93,14 @@ function displayActionDetail(action) {
     html += '<p>' + escapeHtml(action.description) + '</p>';
     html += '</div>';
     
-    if (action.using) {
+    if (action.using && action.using !== '') {
         html += '<div class="detail-section">';
         html += '<h3>Runtime</h3>';
         var runtimeText = escapeHtml(action.using);
-        html += '<p>' + runtimeText.charAt(0).toUpperCase() + runtimeText.slice(1) + '</p>';
+        if (runtimeText.length > 0) {
+            runtimeText = runtimeText.charAt(0).toUpperCase() + runtimeText.slice(1);
+        }
+        html += '<p>' + runtimeText + '</p>';
         html += '</div>';
     }
     
