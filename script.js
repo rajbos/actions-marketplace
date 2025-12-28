@@ -1,6 +1,7 @@
 var jsonFileToUrl = 'actions-data-url.txt';
 var jsonUrl = 'actions-data.json';
 var allActions = [];
+var activeFilters = {};
 
 function loadFile(url, isJson, callback) {
     var xobj = new XMLHttpRequest();                
@@ -26,6 +27,10 @@ function addActionPanel(mainElement, action) {
     panel.setAttribute('data-repo', action.repo.toLowerCase());
     panel.setAttribute('data-author', (action.author || '').toLowerCase());
     panel.setAttribute('data-description', action.description.toLowerCase());
+    panel.setAttribute('data-is-fork', action.isFork === true ? 'true' : 'false');
+    panel.setAttribute('data-is-archived', action.isArchived === true ? 'true' : 'false');
+    panel.setAttribute('data-visibility', action.visibility || 'public');
+    panel.setAttribute('data-using', action.using || 'unknown');
     
     // Determine visibility status
     var isPrivate = action.private === true;
@@ -53,13 +58,25 @@ function filterActions(searchTerm) {
         var author = panel.getAttribute('data-author') || '';
         var description = panel.getAttribute('data-description') || '';
         
-        var matches = searchLower === '' || 
+        // Check search term match
+        var searchMatches = searchLower === '' || 
                      name.indexOf(searchLower) !== -1 || 
                      repo.indexOf(searchLower) !== -1 || 
                      author.indexOf(searchLower) !== -1 || 
                      description.indexOf(searchLower) !== -1;
         
-        if (matches) {
+        // Check filter matches
+        var filterMatches = true;
+        for (var filterKey in activeFilters) {
+            var filterValue = activeFilters[filterKey];
+            var panelValue = panel.getAttribute('data-' + filterKey.toLowerCase().replace('isfork', 'is-fork').replace('isarchived', 'is-archived'));
+            if (panelValue !== filterValue) {
+                filterMatches = false;
+                break;
+            }
+        }
+        
+        if (searchMatches && filterMatches) {
             panel.style.display = 'block';
             visibleCount++;
         } else {
@@ -84,6 +101,94 @@ function setLastUpdated(lastUpdated) {
     document.getElementById('lastUpdated').innerHTML = date.toLocaleString();
 }
 
+function updateFilterCounts() {
+    var counts = {
+        'count-fork': 0,
+        'count-not-fork': 0,
+        'count-active': 0,
+        'count-archived': 0,
+        'count-public': 0,
+        'count-private': 0,
+        'count-composite': 0,
+        'count-node': 0,
+        'count-docker': 0
+    };
+    
+    allActions.forEach(function(action) {
+        if (action.isFork === true) {
+            counts['count-fork']++;
+        } else {
+            counts['count-not-fork']++;
+        }
+        
+        if (action.isArchived === true) {
+            counts['count-archived']++;
+        } else {
+            counts['count-active']++;
+        }
+        
+        if (action.visibility === 'private') {
+            counts['count-private']++;
+        } else {
+            counts['count-public']++;
+        }
+        
+        var using = (action.using || 'unknown').toLowerCase();
+        if (using.indexOf('composite') !== -1) {
+            counts['count-composite']++;
+        } else if (using.indexOf('node') !== -1) {
+            counts['count-node']++;
+        } else if (using.indexOf('docker') !== -1) {
+            counts['count-docker']++;
+        }
+    });
+    
+    for (var key in counts) {
+        var element = document.getElementById(key);
+        if (element) {
+            element.innerHTML = counts[key];
+        }
+    }
+}
+
+function toggleFilter(filterKey, filterValue) {
+    var button = document.querySelector('.filter-btn[data-filter="' + filterKey + '"][data-value="' + filterValue + '"]');
+    
+    if (activeFilters[filterKey] === filterValue) {
+        // Remove filter if clicking the same one
+        delete activeFilters[filterKey];
+        button.classList.remove('active');
+    } else {
+        // Remove active class from all buttons in the same filter group
+        var groupButtons = document.querySelectorAll('.filter-btn[data-filter="' + filterKey + '"]');
+        groupButtons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        
+        // Set new filter
+        activeFilters[filterKey] = filterValue;
+        button.classList.add('active');
+    }
+    
+    // Reapply filters
+    var searchInput = document.querySelector('.search input');
+    filterActions(searchInput.value);
+}
+
+function clearAllFilters() {
+    activeFilters = {};
+    
+    // Remove active class from all filter buttons
+    var buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    
+    // Clear search and reapply
+    var searchInput = document.querySelector('.search input');
+    filterActions(searchInput.value);
+}
+
 function init() {
     loadFile(jsonFileToUrl, false, function(response) {
         console.log('found file with content' + response);
@@ -103,10 +208,23 @@ function init() {
                 addActionPanel(mainElement, action);
             }
             
+            // Update filter counts
+            updateFilterCounts();
+            
             // Setup search functionality
             var searchInput = document.querySelector('.search input');
             searchInput.addEventListener('input', function(e) {
                 filterActions(e.target.value);
+            });
+            
+            // Setup filter button functionality
+            var filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var filterKey = this.getAttribute('data-filter');
+                    var filterValue = this.getAttribute('data-value');
+                    toggleFilter(filterKey, filterValue);
+                });
             });
         }
         )}
