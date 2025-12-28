@@ -21,6 +21,13 @@ function getRepoFromUrl() {
     return urlParams.get('repo');
 }
 
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function displayActionDetail(action) {
     var detailElement = document.getElementById('actionDetail');
     
@@ -61,7 +68,7 @@ function displayActionDetail(action) {
     if (action.path) {
         html += '<div class="detail-section">';
         html += '<h3>Path</h3>';
-        html += '<p>' + action.path + '</p>';
+        html += '<p>' + escapeHtml(action.path) + '</p>';
         html += '</div>';
     }
     
@@ -80,14 +87,16 @@ function displayActionDetail(action) {
     if (action.using) {
         html += '<div class="detail-section">';
         html += '<h3>Runtime</h3>';
-        html += '<p>' + action.using.charAt(0).toUpperCase() + action.using.slice(1) + '</p>';
+        var runtimeText = escapeHtml(action.using);
+        html += '<p>' + runtimeText.charAt(0).toUpperCase() + runtimeText.slice(1) + '</p>';
         html += '</div>';
     }
     
     if (action.forkedfrom && action.forkedfrom !== '') {
         html += '<div class="detail-section">';
         html += '<h3>Forked From</h3>';
-        html += '<p><a href="https://github.com/' + action.forkedfrom + '" target="_blank">' + action.forkedfrom + '</a></p>';
+        var escapedForkedFrom = escapeHtml(action.forkedfrom);
+        html += '<p><a href="https://github.com/' + escapedForkedFrom + '" target="_blank">' + escapedForkedFrom + '</a></p>';
         html += '</div>';
     }
     
