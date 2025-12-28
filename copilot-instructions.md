@@ -1,6 +1,4 @@
-# Contributing to Actions Marketplace
-
-Thank you for your interest in contributing to the Actions Marketplace project!
+# Copilot Instructions for Actions Marketplace
 
 ## Development Guidelines
 
@@ -71,11 +69,3 @@ When making UI changes:
 - Use the existing design system and CSS patterns
 - Maintain consistent naming conventions
 - Add comments only when necessary to explain complex logic
-
-## Submitting Changes
-
-1. Create a feature branch from `main`
-2. Make your changes following these guidelines
-3. Test thoroughly
-4. Submit a pull request with a clear description of changes
-5. Include screenshots of any UI changes
