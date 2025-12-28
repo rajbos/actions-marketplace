@@ -72,11 +72,11 @@ function filterActions(searchTerm) {
             var attrName = 'data-' + convertFilterKeyToAttrName(filterKey);
             var panelValue = panel.getAttribute(attrName) || '';
             
-            // Special handling for "using" filter - check if value starts with or contains the filter term
+            // Special handling for "using" filter - check if value starts with the filter term
             if (filterKey === 'using') {
                 var lowerPanelValue = panelValue.toLowerCase();
-                // Match if the value starts with the filter or equals it (e.g., 'node16' starts with 'node', 'composite' equals 'composite')
-                if (lowerPanelValue.indexOf(filterValue) !== 0 && lowerPanelValue !== filterValue) {
+                // Match if the value starts with the filter (e.g., 'node16' starts with 'node', 'composite' starts with 'composite')
+                if (lowerPanelValue.indexOf(filterValue) !== 0) {
                     filterMatches = false;
                     break;
                 }
@@ -158,11 +158,11 @@ function updateFilterCounts() {
         }
         
         var using = (action.using || 'unknown').toLowerCase();
-        if (using.indexOf('composite') !== -1) {
+        if (using.indexOf('composite') === 0) {
             counts['count-composite']++;
-        } else if (using.indexOf('node') !== -1) {
+        } else if (using.indexOf('node') === 0) {
             counts['count-node']++;
-        } else if (using.indexOf('docker') !== -1) {
+        } else if (using.indexOf('docker') === 0) {
             counts['count-docker']++;
         }
     });
@@ -210,11 +210,7 @@ function clearAllFilters() {
     
     // Clear search and reapply
     var searchInput = document.querySelector('.search input');
-    if (searchInput) {
-        filterActions(searchInput.value);
-    } else {
-        filterActions('');
-    }
+    filterActions(searchInput ? searchInput.value : '');
 }
 
 function init() {
