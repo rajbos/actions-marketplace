@@ -20,7 +20,7 @@ body {
     background: white;
     border: 1px solid #d0d7de;
     border-radius: 12px;
-    height: 320px;
+    height: 360px;
     margin: 16px;
     padding: 24px;
     width: 380px;
@@ -358,4 +358,93 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     background-color: #fff8c5;
     color: #7d4e00;
     border: 1px solid #bf8700;
+}
+
+/* Detail page styles */
+#detailContainer {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#actionDetail {
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.detail-header {
+    border-bottom: 2px solid #d0d7de;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.detail-header h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #24292f;
+    font-weight: 700;
+}
+
+.detail-section {
+    margin-bottom: 32px;
+}
+
+.detail-section h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    color: #24292f;
+    font-weight: 600;
+}
+
+.detail-section p {
+    margin: 0;
+    color: #57606a;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.detail-loading,
+.detail-error {
+    text-align: center;
+    padding: 48px 24px;
+    color: #57606a;
+    font-size: 1.1rem;
+}
+
+.detail-error {
+    color: #cf222e;
+}
+
+.detail-error a {
+    color: #0969da;
+    text-decoration: underline;
+}
+
+.panel-actions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #d0d7de;
+}
+
+.panel-actions a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #0969da;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.panel-actions a:hover {
+    background-color: #0550ae;
+    text-decoration: none;
 }

@@ -37,6 +37,7 @@ function addActionPanel(mainElement, action) {
     panel.innerHTML += '<div class="line"><span class="name">Action:</span><span class="value">'+action.name+'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Author:</span><span class="value">'+(action.author || "Not set") +'</span></div>';
     panel.innerHTML += '<div class="line"><span class="name">Description:</span><div class="value description">'+action.description+'</div></div>';
+    panel.innerHTML += '<div class="panel-actions"><a href="detail.html?repo='+encodeURIComponent(action.repo)+'">View Details →</a></div>';
 
     mainElement.appendChild(panel);
 }
