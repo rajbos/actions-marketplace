@@ -69,10 +69,21 @@ function filterActions(searchTerm) {
         var filterMatches = true;
         for (var filterKey in activeFilters) {
             var filterValue = activeFilters[filterKey];
-            var panelValue = panel.getAttribute('data-' + filterKey.toLowerCase().replace('isfork', 'is-fork').replace('isarchived', 'is-archived'));
-            if (panelValue !== filterValue) {
-                filterMatches = false;
-                break;
+            var attrName = 'data-' + filterKey.toLowerCase().replace('isfork', 'is-fork').replace('isarchived', 'is-archived');
+            var panelValue = panel.getAttribute(attrName) || '';
+            
+            // Special handling for "using" filter - check if value contains the filter term
+            if (filterKey === 'using') {
+                if (panelValue.indexOf(filterValue) === -1) {
+                    filterMatches = false;
+                    break;
+                }
+            } else {
+                // Exact match for other filters
+                if (panelValue !== filterValue) {
+                    filterMatches = false;
+                    break;
+                }
             }
         }
         
