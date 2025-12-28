@@ -466,3 +466,122 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     background-color: #0550ae;
     text-decoration: none;
 }
+
+.filters {
+    clear: both;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #d0d7de;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.filter-group:last-of-type {
+    margin-bottom: 16px;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #57606a;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: #f6f8fa;
+    color: #24292f;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    background-color: #e7edf3;
+    border-color: #0969da;
+}
+
+.filter-btn.active {
+    background-color: #0969da;
+    color: white;
+    border-color: #0969da;
+}
+
+.filter-btn .count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.filter-btn.active .count {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.filter-btn-clear {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #cf222e;
+    border: 1px solid #cf222e;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn-clear:hover {
+    background-color: #cf222e;
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .filters {
+        padding: 16px;
+    }
+    
+    .filter-group {
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+    
+    .filter-label {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+    
+    .filter-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .filter-btn-clear {
+        width: 100%;
+        margin-top: 8px;
+    }
+}
