@@ -10,3 +10,8 @@ package-lock.json
 screenshots/
 visual-test.js
 actions-data.json
+test-*.html
+test-*.js
+test-*.json
+test-*.txt
+package.json

@@ -30,7 +30,13 @@ function escapeHtml(text) {
 
 function decodeBase64(base64String) {
     try {
-        return decodeURIComponent(escape(atob(base64String)));
+        // Proper UTF-8 decoding for base64 strings
+        var binary = atob(base64String);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return new TextDecoder('utf-8').decode(bytes);
     } catch (e) {
         console.error('Failed to decode base64:', e);
         return null;
@@ -40,28 +46,56 @@ function decodeBase64(base64String) {
 function renderMarkdown(markdown) {
     if (!markdown) return '';
     
-    // Basic markdown to HTML conversion
+    // Basic markdown to HTML conversion with proper escaping
     var html = markdown;
     
-    // Headers
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    // Headers (escape the content)
+    html = html.replace(/^### (.*$)/gim, function(match, p1) {
+        return '<h3>' + escapeHtml(p1) + '</h3>';
+    });
+    html = html.replace(/^## (.*$)/gim, function(match, p1) {
+        return '<h2>' + escapeHtml(p1) + '</h2>';
+    });
+    html = html.replace(/^# (.*$)/gim, function(match, p1) {
+        return '<h1>' + escapeHtml(p1) + '</h1>';
+    });
     
-    // Bold
-    html = html.replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>');
-    html = html.replace(/__([^_]+)__/gim, '<strong>$1</strong>');
+    // Bold (escape the content)
+    html = html.replace(/\*\*([^*]+)\*\*/gim, function(match, p1) {
+        return '<strong>' + escapeHtml(p1) + '</strong>';
+    });
+    html = html.replace(/__([^_]+)__/gim, function(match, p1) {
+        return '<strong>' + escapeHtml(p1) + '</strong>';
+    });
     
-    // Italic
-    html = html.replace(/\*([^*]+)\*/gim, '<em>$1</em>');
-    html = html.replace(/_([^_]+)_/gim, '<em>$1</em>');
+    // Italic (escape the content)
+    html = html.replace(/\*([^*]+)\*/gim, function(match, p1) {
+        return '<em>' + escapeHtml(p1) + '</em>';
+    });
+    html = html.replace(/_([^_]+)_/gim, function(match, p1) {
+        return '<em>' + escapeHtml(p1) + '</em>';
+    });
     
-    // Links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank">$1</a>');
+    // Links (escape both text and URL, validate URL)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, function(match, text, url) {
+        var escapedText = escapeHtml(text);
+        var escapedUrl = escapeHtml(url);
+        // Basic URL validation - only allow http, https, and relative URLs
+        if (escapedUrl.match(/^(https?:\/\/|\/|#)/)) {
+            return '<a href="' + escapedUrl + '" target="_blank">' + escapedText + '</a>';
+        }
+        return escapedText; // If URL doesn't match, just return the text
+    });
     
-    // Code blocks
-    html = html.replace(/```([^`]+)```/gim, '<pre><code>$1</code></pre>');
-    html = html.replace(/`([^`]+)`/gim, '<code>$1</code>');
+    // Code blocks (escape the content)
+    html = html.replace(/```([^`]+)```/gim, function(match, p1) {
+        return '<pre><code>' + escapeHtml(p1) + '</code></pre>';
+    });
+    
+    // Inline code (escape the content)
+    html = html.replace(/`([^`]+)`/gim, function(match, p1) {
+        return '<code>' + escapeHtml(p1) + '</code>';
+    });
     
     // Line breaks
     html = html.replace(/\n\n/g, '</p><p>');
