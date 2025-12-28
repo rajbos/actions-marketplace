@@ -28,6 +28,53 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function decodeBase64(base64String) {
+    try {
+        return decodeURIComponent(escape(atob(base64String)));
+    } catch (e) {
+        console.error('Failed to decode base64:', e);
+        return null;
+    }
+}
+
+function renderMarkdown(markdown) {
+    if (!markdown) return '';
+    
+    // Basic markdown to HTML conversion
+    var html = markdown;
+    
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    
+    // Bold
+    html = html.replace(/\*\*([^*]+)\*\*/gim, '<strong>$1</strong>');
+    html = html.replace(/__([^_]+)__/gim, '<strong>$1</strong>');
+    
+    // Italic
+    html = html.replace(/\*([^*]+)\*/gim, '<em>$1</em>');
+    html = html.replace(/_([^_]+)_/gim, '<em>$1</em>');
+    
+    // Links
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank">$1</a>');
+    
+    // Code blocks
+    html = html.replace(/```([^`]+)```/gim, '<pre><code>$1</code></pre>');
+    html = html.replace(/`([^`]+)`/gim, '<code>$1</code>');
+    
+    // Line breaks
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = html.replace(/\n/g, '<br>');
+    
+    // Wrap in paragraph if not already wrapped
+    if (!html.startsWith('<')) {
+        html = '<p>' + html + '</p>';
+    }
+    
+    return html;
+}
+
 function displayActionDetail(action) {
     var detailElement = document.getElementById('actionDetail');
     
@@ -118,6 +165,18 @@ function displayActionDetail(action) {
         html += '<div class="detail-section">';
         html += '<h3>Action File</h3>';
         html += '<p><a href="' + escapeHtml(action.downloadUrl) + '" target="_blank">View action.yml</a></p>';
+        html += '</div>';
+    }
+    
+    if (action.readme) {
+        html += '<div class="detail-section readme-section">';
+        html += '<h3>README</h3>';
+        var decodedReadme = decodeBase64(action.readme);
+        if (decodedReadme) {
+            html += '<div class="readme-content">' + renderMarkdown(decodedReadme) + '</div>';
+        } else {
+            html += '<p class="readme-error">Failed to load README content</p>';
+        }
         html += '</div>';
     }
     
