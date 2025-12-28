@@ -44,7 +44,7 @@ function displayActionDetail(action) {
     var visibilityIcon = isPrivate ? '🔒' : '🌐';
     
     var html = '<div class="detail-header">';
-    html += '<h2>' + action.name + '</h2>';
+    html += '<h2>' + escapeHtml(action.name) + '</h2>';
     html += '<span class="visibility-badge ' + visibilityClass + '">' + visibilityIcon + ' ' + visibilityText + '</span>';
     
     // Add archived badge if applicable
@@ -61,8 +61,9 @@ function displayActionDetail(action) {
     
     html += '<div class="detail-section">';
     html += '<h3>Repository</h3>';
-    var ownerName = action.owner || '';
-    html += '<p><a href="https://github.com/' + ownerName + '/' + action.repo + '" target="_blank">' + ownerName + '/' + action.repo + '</a></p>';
+    var ownerName = escapeHtml(action.owner || '');
+    var repoName = escapeHtml(action.repo);
+    html += '<p><a href="https://github.com/' + ownerName + '/' + repoName + '" target="_blank">' + ownerName + '/' + repoName + '</a></p>';
     html += '</div>';
     
     if (action.path) {
@@ -75,13 +76,13 @@ function displayActionDetail(action) {
     if (action.author) {
         html += '<div class="detail-section">';
         html += '<h3>Author</h3>';
-        html += '<p>' + action.author + '</p>';
+        html += '<p>' + escapeHtml(action.author) + '</p>';
         html += '</div>';
     }
     
     html += '<div class="detail-section">';
     html += '<h3>Description</h3>';
-    html += '<p>' + action.description + '</p>';
+    html += '<p>' + escapeHtml(action.description) + '</p>';
     html += '</div>';
     
     if (action.using) {
@@ -103,7 +104,7 @@ function displayActionDetail(action) {
     if (action.downloadUrl) {
         html += '<div class="detail-section">';
         html += '<h3>Action File</h3>';
-        html += '<p><a href="' + action.downloadUrl + '" target="_blank">View action.yml</a></p>';
+        html += '<p><a href="' + escapeHtml(action.downloadUrl) + '" target="_blank">View action.yml</a></p>';
         html += '</div>';
     }
     
