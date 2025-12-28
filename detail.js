@@ -97,19 +97,21 @@ function displayActionDetail(action) {
         html += '<div class="detail-section">';
         html += '<h3>Runtime</h3>';
         var runtimeText = escapeHtml(action.using);
-        if (runtimeText.length > 0) {
-            runtimeText = runtimeText.charAt(0).toUpperCase() + runtimeText.slice(1);
-        }
+        runtimeText = runtimeText.charAt(0).toUpperCase() + runtimeText.slice(1);
         html += '<p>' + runtimeText + '</p>';
         html += '</div>';
     }
     
     if (action.forkedfrom && action.forkedfrom !== '') {
-        html += '<div class="detail-section">';
-        html += '<h3>Forked From</h3>';
+        // Validate format: owner/repo (basic check)
         var escapedForkedFrom = escapeHtml(action.forkedfrom);
-        html += '<p><a href="https://github.com/' + escapedForkedFrom + '" target="_blank">' + escapedForkedFrom + '</a></p>';
-        html += '</div>';
+        var parts = escapedForkedFrom.split('/');
+        if (parts.length === 2 && parts[0].length > 0 && parts[1].length > 0) {
+            html += '<div class="detail-section">';
+            html += '<h3>Forked From</h3>';
+            html += '<p><a href="https://github.com/' + escapedForkedFrom + '" target="_blank">' + escapedForkedFrom + '</a></p>';
+            html += '</div>';
+        }
     }
     
     if (action.downloadUrl) {
