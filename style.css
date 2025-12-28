@@ -360,6 +360,24 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     border: 1px solid #bf8700;
 }
 
+.visibility-badge-internal {
+    background-color: #fff5b1;
+    color: #7d4e00;
+    border: 1px solid #d4a72c;
+}
+
+.visibility-badge-archived {
+    background-color: #f0f0f0;
+    color: #57606a;
+    border: 1px solid #8c959f;
+}
+
+.visibility-badge-fork {
+    background-color: #ddf4ff;
+    color: #0969da;
+    border: 1px solid #54aeff;
+}
+
 /* Detail page styles */
 #detailContainer {
     max-width: 900px;
