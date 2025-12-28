@@ -69,12 +69,14 @@ function filterActions(searchTerm) {
         var filterMatches = true;
         for (var filterKey in activeFilters) {
             var filterValue = activeFilters[filterKey];
-            var attrName = 'data-' + filterKey.toLowerCase().replace('isfork', 'is-fork').replace('isarchived', 'is-archived');
+            var attrName = 'data-' + convertFilterKeyToAttrName(filterKey);
             var panelValue = panel.getAttribute(attrName) || '';
             
-            // Special handling for "using" filter - check if value contains the filter term
+            // Special handling for "using" filter - check if value starts with or contains the filter term
             if (filterKey === 'using') {
-                if (panelValue.indexOf(filterValue) === -1) {
+                var lowerPanelValue = panelValue.toLowerCase();
+                // Match if the value starts with the filter or equals it (e.g., 'node16' starts with 'node', 'composite' equals 'composite')
+                if (lowerPanelValue.indexOf(filterValue) !== 0 && lowerPanelValue !== filterValue) {
                     filterMatches = false;
                     break;
                 }
@@ -97,6 +99,17 @@ function filterActions(searchTerm) {
     
     var actionCountElement = document.getElementById('actionCount');
     actionCountElement.innerHTML = visibleCount;
+}
+
+function convertFilterKeyToAttrName(filterKey) {
+    // Convert camelCase filter keys to kebab-case data attribute names
+    var attrMap = {
+        'isFork': 'is-fork',
+        'isArchived': 'is-archived',
+        'visibility': 'visibility',
+        'using': 'using'
+    };
+    return attrMap[filterKey] || filterKey.toLowerCase();
 }
 
 function setLastUpdated(lastUpdated) {
@@ -197,7 +210,11 @@ function clearAllFilters() {
     
     // Clear search and reapply
     var searchInput = document.querySelector('.search input');
-    filterActions(searchInput.value);
+    if (searchInput) {
+        filterActions(searchInput.value);
+    } else {
+        filterActions('');
+    }
 }
 
 function init() {
@@ -237,6 +254,12 @@ function init() {
                     toggleFilter(filterKey, filterValue);
                 });
             });
+            
+            // Setup clear filters button
+            var clearBtn = document.getElementById('clearFiltersBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearAllFilters);
+            }
         }
         )}
     )
