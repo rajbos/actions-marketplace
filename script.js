@@ -208,9 +208,13 @@ function clearAllFilters() {
         btn.classList.remove('active');
     });
     
-    // Clear search and reapply
+    // Clear search input value and reapply filters
     var searchInput = document.querySelector('.search input');
-    filterActions(searchInput ? searchInput.value : '');
+    if (searchInput) {
+        searchInput.value = '';
+        updateClearButton();
+    }
+    filterActions('');
 }
 
 function init() {
@@ -237,9 +241,22 @@ function init() {
             
             // Setup search functionality
             var searchInput = document.querySelector('.search input');
+            var clearBtn = document.querySelector('.search-clear');
+            
             searchInput.addEventListener('input', function(e) {
                 filterActions(e.target.value);
+                updateClearButton();
             });
+            
+            // Setup search clear button
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    filterActions('');
+                    updateClearButton();
+                    searchInput.focus();
+                });
+            }
             
             // Setup filter button functionality
             var filterButtons = document.querySelectorAll('.filter-btn');
@@ -252,12 +269,24 @@ function init() {
             });
             
             // Setup clear filters button
-            var clearBtn = document.getElementById('clearFiltersBtn');
-            if (clearBtn) {
-                clearBtn.addEventListener('click', clearAllFilters);
+            var clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearAllFilters);
             }
         }
         )}
     )
+}
+
+function updateClearButton() {
+    var searchInput = document.querySelector('.search input');
+    var clearBtn = document.querySelector('.search-clear');
+    if (clearBtn && searchInput) {
+        if (searchInput.value.length > 0) {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+    }
 }
     

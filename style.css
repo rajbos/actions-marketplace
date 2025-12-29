@@ -268,7 +268,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 .search input {
     height: 42px;
-    padding: 8px 16px;
+    padding: 8px 40px 8px 16px;
     border: 2px solid #d0d7de;
     border-radius: 8px;
     font-size: 1rem;
@@ -285,6 +285,36 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 .search input::placeholder {
     color: #8c959f;
+}
+
+.search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: none;
+    background-color: transparent;
+    color: #57606a;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.search-clear:hover {
+    background-color: #f6f8fa;
+    color: #24292f;
+}
+
+.search-clear.visible {
+    display: flex;
 }
 
 .top {
