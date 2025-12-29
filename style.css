@@ -272,7 +272,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     border: 2px solid #d0d7de;
     border-radius: 8px;
     font-size: 1rem;
-    width: 300px;
+    width: 400px;
     transition: all 0.3s ease;
     background-color: white;
 }
@@ -295,11 +295,19 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     border: 1px solid #d0d7de;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
+}
+
+.top > .actionInfo,
+.top > .search {
+    display: inline-block;
+    margin-right: 32px;
+    margin-bottom: 16px;
+}
+
+.top .filters-container {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #d0d7de;
 }
 
 #lastUpdatePanel {
@@ -467,16 +475,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     text-decoration: none;
 }
 
-.filters {
-    clear: both;
-    margin-bottom: 24px;
-    padding: 20px 24px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    border: 1px solid #d0d7de;
-}
-
 .filter-group {
     display: flex;
     align-items: center;
@@ -561,8 +559,19 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 @media screen and (max-width: 768px) {
-    .filters {
+    .top {
         padding: 16px;
+    }
+    
+    .top > .actionInfo,
+    .top > .search {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+    
+    .search input {
+        width: 100%;
     }
     
     .filter-group {
