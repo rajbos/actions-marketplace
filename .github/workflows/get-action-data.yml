@@ -21,7 +21,7 @@ jobs:
       contents: write # needed to write back the repository
 
     steps:
-    - uses: devops-actions/load-available-actions@v2.1.17
+    - uses: devops-actions/load-available-actions@v2.2.0
       name: Load available actions
       id: load-actions
       with: 
