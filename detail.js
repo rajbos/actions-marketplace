@@ -8,6 +8,11 @@ function loadFile(url, isJson, callback) {
     }
 
     xobj.open('GET', url, true);
+    if (!isJson) {
+        // The URL pointer file must always be fresh so we pick up new versioned JSON URLs
+        xobj.setRequestHeader('Cache-Control', 'no-cache');
+        xobj.setRequestHeader('Pragma', 'no-cache');
+    }
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             callback(xobj.responseText);
