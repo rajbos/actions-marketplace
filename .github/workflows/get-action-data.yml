@@ -21,7 +21,12 @@ jobs:
       contents: write # needed to write back the repository
 
     steps:
-    - uses: devops-actions/load-available-actions@v2.2.1
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+      with:
+        egress-policy: audit
+
+    - uses: devops-actions/load-available-actions@b46a50119e29dd0930da799e49f36c7f33d98cb6 # v2.2.0
       name: Load available actions
       id: load-actions
       with: 
@@ -48,14 +53,14 @@ jobs:
         echo "- **Total:** $total" >> $GITHUB_STEP_SUMMARY
         
     - name: Upload result file as artefact
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with: 
         name: actions
         path: ${{ steps.filename.outputs.filename }}
    
     - name: Upload json to this repository
       #uses: LasyIsLazy/github-upload-action@v0.1.0
-      uses: rajbos-actions/github-upload-action@v0.2.0
+      uses: rajbos-actions/github-upload-action@997e5c85d66375559f76e55008ab63cbee71542e # v0.2.0
       with:
         access-token: ${{ secrets.GITHUB_TOKEN }}
         file-path: ${{ steps.filename.outputs.filename }}

@@ -3,10 +3,18 @@ on:
  issues:
     types: [opened]
     
+permissions:
+  contents: read
+
 jobs:
   track_issue:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        with:
+          egress-policy: audit
+
       - name: Get project data
         env:
           GITHUB_TOKEN: ${{secrets.PROJECT_TOKEN}}
