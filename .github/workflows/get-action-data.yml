@@ -26,7 +26,7 @@ jobs:
       with:
         egress-policy: audit
 
-    - uses: devops-actions/load-available-actions@b46a50119e29dd0930da799e49f36c7f33d98cb6 # v2.2.0
+    - uses: devops-actions/load-available-actions@cd7d42c8b7da1d70198e69dd1ae16beaf34eb20f # v2.2.1
       name: Load available actions
       id: load-actions
       with: 
