@@ -68,3 +68,17 @@ jobs:
         repo: actions-marketplace # ${{ github.repository }} doesn't work with this action :-(, it'll fail over the slash and owner name
         #remote-dir:  // upload in the root
         branch-name: gh-pages
+
+    - name: Update URL pointer with versioned filename
+      run: |
+        # Embed the run ID so the URL changes on every data update, busting the browser cache
+        echo -n "actions-data.json?v=${{ github.run_id }}" > actions-data-url.txt
+
+    - name: Upload versioned URL pointer to this repository
+      uses: rajbos-actions/github-upload-action@997e5c85d66375559f76e55008ab63cbee71542e # v0.2.0
+      with:
+        access-token: ${{ secrets.GITHUB_TOKEN }}
+        file-path: actions-data-url.txt
+        owner: ${{ github.repository_owner }}
+        repo: actions-marketplace
+        branch-name: gh-pages
