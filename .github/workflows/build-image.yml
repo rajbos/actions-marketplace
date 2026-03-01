@@ -13,13 +13,21 @@ env:
   NAME: ghcr.io/rajbos/actions-marketplace/powershell
   TAG: 7
     
+permissions:
+  contents: read
+
 jobs:
   build-and-push-container:
     runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:
-    - uses: actions/checkout@v6
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - name: Build
       run: |
         docker build -t ${NAME}:${TAG} -f Dockerfile . 
